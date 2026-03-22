@@ -119,6 +119,19 @@ document.addEventListener('DOMContentLoaded', function () {
     eyeClosed.classList.toggle('hidden');
   });
 
+  // Social signup buttons
+  document.querySelector('.social-btn-google')?.addEventListener('click', function () {
+    console.log('Google signup clicked');
+    // TODO: Implement Google OAuth
+    alert('Google signup to be implemented');
+  });
+
+  document.querySelector('.social-btn-apple')?.addEventListener('click', function () {
+    console.log('Apple signup clicked');
+    // TODO: Implement Apple OAuth
+    alert('Apple signup to be implemented');
+  });
+
   // Form submission
   document.getElementById('signupForm').addEventListener('submit', function (e) {
     e.preventDefault();
