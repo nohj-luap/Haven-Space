@@ -18,7 +18,7 @@ This is the backend API for Haven Space, built with PHP. It provides RESTful end
 ### 2. Prioritize Readability
 
 - Use consistent formatting and indentation
-- Add comments only when necessary to explain *why*, not *what*
+- Add comments only when necessary to explain _why_, not _what_
 - Keep functions short and focused (ideally under 30 lines)
 - Avoid nested logic deeper than 2-3 levels
 
@@ -53,11 +53,11 @@ This is the backend API for Haven Space, built with PHP. It provides RESTful end
 // Good: Simple and clear
 public function show($id) {
     $room = Room::find($id);
-    
+
     if (!$room) {
         return json_response(404, ['error' => 'Room not found']);
     }
-    
+
     return json_response(200, ['data' => $room]);
 }
 
