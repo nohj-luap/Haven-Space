@@ -336,6 +336,59 @@ document.addEventListener('DOMContentLoaded', () => {
 - `initSidebar(config)` - Initializes dashboard sidebar with user config
 - `initFloatingHeader()` - Handles scroll-triggered header transitions
 
+## Code Generation Philosophy
+
+**Keep it simple, keep it functional.** Before generating any code, always prioritize simplicity over complexity.
+
+### Guidelines
+
+- **Simple by default**: Write the simplest code that solves the problem. Avoid over-engineering.
+- **Functional first**: Every line of code must serve a clear purpose. Remove decorative or unnecessary code.
+- **No premature optimization**: Don't add abstractions, patterns, or utilities "just in case." Add them when the need arises.
+- **Vanilla over libraries**: Use native JavaScript/CSS features before reaching for external dependencies.
+- **Readable names**: Use clear, descriptive variable and function names. Avoid clever abbreviations.
+- **Single responsibility**: Each function should do one thing well. Split complex functions into smaller ones.
+- **Minimal DOM manipulation**: Cache DOM references, batch updates, and avoid redundant queries.
+- **CSS efficiency**: Reuse existing CSS variables and utility classes. Don't create new styles for what existing styles can handle.
+
+### Before Writing Code Checklist
+
+1. Can this be done with fewer lines?
+2. Am I adding unnecessary abstractions?
+3. Does every line have a clear purpose?
+4. Can I use existing project patterns instead of inventing new ones?
+5. Will this be easy for another developer to understand?
+
+### Example: Simple vs. Over-engineered
+
+**❌ Over-engineered:**
+
+```javascript
+const createRoomCard = room => {
+  const factory = new RoomCardFactory(room);
+  const renderer = factory.getRenderer();
+  return renderer.render({
+    metadata: new MetadataBuilder(room).build(),
+    actions: ActionRegistry.get('room'),
+  });
+};
+```
+
+**✅ Simple and functional:**
+
+```javascript
+function createRoomCard(room) {
+  const card = document.createElement('div');
+  card.className = 'room-card';
+  card.innerHTML = `
+    <h3>${room.title}</h3>
+    <p>${room.location}</p>
+    <span>$${room.price}/month</span>
+  `;
+  return card;
+}
+```
+
 ## Key Features
 
 ### Authentication System
