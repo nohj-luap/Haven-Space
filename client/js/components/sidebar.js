@@ -172,6 +172,8 @@ export function initSidebar(options = {}) {
       updateUserInfo(user);
       setActiveState();
       setupLogoutHandler();
+      setupToggleHandler();
+      restoreCollapsedState();
     })
     .catch(err => {
       console.error('Failed to load sidebar template:', err);
@@ -228,7 +230,7 @@ function renderNavItem(item) {
     .toLowerCase()
     .replace(/\s+/g, '-')}">
     ${icon}
-    ${item.label}
+    <span class="sidebar-nav-item-text">${item.label}</span>
     <svg class="sidebar-dropdown-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
     </svg>
@@ -246,7 +248,7 @@ function renderNavItem(item) {
 
   return `<a href="${item.href}" class="sidebar-nav-item" data-href="${item.href}">
   ${icon}
-  ${item.label}
+  <span class="sidebar-nav-item-text">${item.label}</span>
   ${badge}
 </a>`;
 }
@@ -258,7 +260,7 @@ function renderNavChildItem(child) {
   const icon = getHeroicon(child.icon);
   return `<a href="${child.href}" class="sidebar-nav-child-item" data-href="${child.href}">
   ${icon}
-  ${child.label}
+  <span class="sidebar-nav-item-text">${child.label}</span>
 </a>`;
 }
 
@@ -276,12 +278,29 @@ function setupDropdownHandlers() {
 
       if (content) {
         const isExpanded = content.style.display === 'block';
+        
+        // Close all other dropdowns first
+        const allDropdowns = document.querySelectorAll('.sidebar-nav-dropdown-content');
+        const allDropdownContainers = document.querySelectorAll('.sidebar-nav-dropdown');
+        const allIcons = document.querySelectorAll('.sidebar-nav-dropdown-toggle .sidebar-dropdown-icon');
+        
+        allDropdowns.forEach(d => {
+          if (d !== content) d.style.display = 'none';
+        });
+        allDropdownContainers.forEach(d => {
+          if (d !== dropdown) d.classList.remove('sidebar-nav-dropdown-open');
+        });
+        allIcons.forEach(i => {
+          if (i !== icon) i.style.transform = 'rotate(0deg)';
+        });
+
+        // Toggle current dropdown
         content.style.display = isExpanded ? 'none' : 'block';
 
-        // Rotate chevron icon
+        // Rotate chevron icon with smooth transition
         if (icon) {
           icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
-          icon.style.transition = 'transform 0.2s ease';
+          icon.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
         }
 
         // Toggle active class on dropdown container
@@ -330,7 +349,7 @@ function setActiveState() {
           if (toggle) toggle.classList.add('active');
           if (icon) {
             icon.style.transform = 'rotate(180deg)';
-            icon.style.transition = 'transform 0.2s ease';
+            icon.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
           }
         }
       }
@@ -356,5 +375,49 @@ function setupLogoutHandler() {
       e.preventDefault();
       console.log('Logout clicked');
     });
+  }
+}
+
+/**
+ * Setup sidebar toggle handler
+ */
+function setupToggleHandler() {
+  const toggleBtn = document.getElementById('sidebar-toggle');
+  const sidebar = document.querySelector('.sidebar');
+
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      saveCollapsedState(sidebar.classList.contains('collapsed'));
+    });
+  }
+}
+
+/**
+ * Save collapsed state to localStorage
+ * @param {boolean} isCollapsed - Whether sidebar is collapsed
+ */
+function saveCollapsedState(isCollapsed) {
+  try {
+    localStorage.setItem('sidebar-collapsed', isCollapsed ? 'true' : 'false');
+  } catch (e) {
+    // localStorage may not be available in some environments
+    console.warn('Could not save sidebar state:', e);
+  }
+}
+
+/**
+ * Restore collapsed state from localStorage
+ */
+function restoreCollapsedState() {
+  try {
+    const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && isCollapsed) {
+      sidebar.classList.add('collapsed');
+    }
+  } catch (e) {
+    // localStorage may not be available in some environments
+    console.warn('Could not restore sidebar state:', e);
   }
 }

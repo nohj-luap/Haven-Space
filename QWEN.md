@@ -307,6 +307,38 @@ git checkout -b hotfix/critical-security-patch
 }
 ```
 
+### Dashboard Responsiveness Guidelines
+
+When implementing new dashboard pages (boarder, landlord, admin), ensure the main content area is responsive to sidebar collapse:
+
+**Required CSS for dashboard main content:**
+
+```css
+/* Main content area - offset for fixed sidebar */
+.dashboard-main {
+  flex: 1;
+  margin-left: 280px;
+  padding: 0;
+  min-height: 100vh;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Adjust main content when sidebar is collapsed */
+.sidebar-collapsed ~ .dashboard-main,
+.sidebar-collapsed + .dashboard-main,
+body:has(.sidebar-collapsed) .dashboard-main {
+  margin-left: 72px;
+}
+```
+
+**Key requirements:**
+
+1. Main content margin must adjust from `280px` to `72px` when sidebar collapses
+2. Use `transition` for smooth animation matching sidebar transition
+3. Support multiple CSS selectors for browser compatibility (`~`, `+`, `:has()`)
+4. Ensure no horizontal overflow or empty space when sidebar state changes
+5. Test on mobile breakpoints (768px) where sidebar hides completely
+
 ### JavaScript Patterns
 
 - **ES6+ Features**: `const`/`let`, arrow functions, template literals
