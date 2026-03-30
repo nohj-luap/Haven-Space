@@ -7,6 +7,7 @@
     "start": "npx http-server dist -p 3000 -o",
     "serve": "npx http-server dist -p 3000",
     "boarder": "node scripts/serve-boarder.js",
+    "landlord": "node scripts/serve-landlord.js",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

@@ -3,10 +3,923 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landlord Dashboard - Boarding House Management</title>
+    <title>Landlord Dashboard - Haven Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../../css/global.css" />
+    <link rel="stylesheet" href="../../css/components/sidebar.css" />
+    <link rel="stylesheet" href="../../css/components/navbar.css" />
+    <link rel="stylesheet" href="../../css/views/landlord/landlord.css" />
   </head>
   <body>
+    <div class="landlord-dashboard">
+      <!-- Sidebar Container -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Content -->
+      <main class="landlord-main">
+        <!-- Navbar Container -->
+        <div id="navbar-container"></div>
+
+        <!-- Content Wrapper -->
+        <div class="landlord-content">
+          <!-- Top Bar with Greeting & Quick Actions -->
+          <div class="landlord-topbar">
+            <div class="landlord-greeting">
+              <h1>Good afternoon, Juan! 👋</h1>
+              <p>Manage your boarding houses and track your business performance.</p>
+            </div>
+            <div class="landlord-topbar-actions">
+              <a href="maps/index.html" class="landlord-btn landlord-btn-outline">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                  />
+                </svg>
+                Map View
+              </a>
+              <a href="maps/index.html" class="landlord-btn landlord-btn-primary">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Create Listing
+              </a>
+            </div>
+          </div>
+
+          <!-- Business Metrics Stats Grid -->
+          <div class="landlord-stats-grid">
+            <div class="landlord-stat-card">
+              <div class="landlord-stat-header">
+                <span class="landlord-stat-label">Occupancy Rate</span>
+                <div class="landlord-stat-icon green">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="landlord-stat-value">85%</div>
+              <div class="landlord-stat-description">
+                <span class="trend-indicator trend-up">↑ 12%</span>
+                vs. last month
+              </div>
+            </div>
+
+            <div class="landlord-stat-card">
+              <div class="landlord-stat-header">
+                <span class="landlord-stat-label">Monthly Revenue</span>
+                <div class="landlord-stat-icon blue">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="landlord-stat-value">₱47,500</div>
+              <div class="landlord-stat-description">
+                <span class="trend-indicator trend-up">↑ 8%</span>
+                vs. last month
+              </div>
+            </div>
+
+            <div class="landlord-stat-card">
+              <div class="landlord-stat-header">
+                <span class="landlord-stat-label">Upcoming Renewals</span>
+                <div class="landlord-stat-icon purple">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="landlord-stat-value">4</div>
+              <div class="landlord-stat-description">
+                <span class="trend-indicator trend-neutral">•</span>
+                This month
+              </div>
+            </div>
+
+            <div class="landlord-stat-card">
+              <div class="landlord-stat-header">
+                <span class="landlord-stat-label">Payment Alerts</span>
+                <div class="landlord-stat-icon yellow">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="landlord-stat-value">
+                <span class="alert-count-yellow">2</span> /
+                <span class="alert-count-red">1</span>
+              </div>
+              <div class="landlord-stat-description">
+                <span class="trend-indicator trend-warning">⚠</span>
+                2 due soon, 1 overdue
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Dashboard Grid - First Row -->
+          <div class="landlord-dashboard-grid">
+            <!-- Payment Dashboard with Traffic Light Status -->
+            <div class="landlord-section">
+              <div class="landlord-section-header">
+                <h2 class="landlord-section-title">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
+                  </svg>
+                  Payment Status Overview
+                </h2>
+                <a href="payments/index.html" class="landlord-view-all">
+                  View all
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </a>
+              </div>
+              <div class="landlord-payment-status-list">
+                <!-- Green Status - On Track -->
+                <div class="landlord-payment-status-card landlord-payment-green">
+                  <div class="landlord-payment-status-header">
+                    <div class="landlord-payment-status-indicator">
+                      <span class="landlord-traffic-light landlord-light-green"></span>
+                      <span class="landlord-payment-status-label">On Track</span>
+                    </div>
+                    <span class="landlord-payment-count">12 payments</span>
+                  </div>
+                  <div class="landlord-payment-status-body">
+                    <div class="landlord-payment-row">
+                      <div class="landlord-payment-info">
+                        <h4 class="landlord-payment-tenant-name">Maria Santos</h4>
+                        <p class="landlord-payment-property">Sunrise Dormitory - Room 201</p>
+                      </div>
+                      <div class="landlord-payment-meta">
+                        <span class="landlord-payment-amount">₱5,500</span>
+                        <span class="landlord-payment-due">Due: Feb 15, 2025</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Yellow Status - Due Soon (Warning) -->
+                <div class="landlord-payment-status-card landlord-payment-yellow">
+                  <div class="landlord-payment-status-header">
+                    <div class="landlord-payment-status-indicator">
+                      <span class="landlord-traffic-light landlord-light-yellow"></span>
+                      <span class="landlord-payment-status-label">Due Soon</span>
+                    </div>
+                    <span class="landlord-payment-count">7-14 days</span>
+                  </div>
+                  <div class="landlord-payment-status-body">
+                    <div class="landlord-payment-row">
+                      <div class="landlord-payment-info">
+                        <h4 class="landlord-payment-tenant-name">Jose Reyes</h4>
+                        <p class="landlord-payment-property">Green Valley - Room 105</p>
+                      </div>
+                      <div class="landlord-payment-meta">
+                        <span class="landlord-payment-amount">₱4,500</span>
+                        <span class="landlord-payment-due">Due: Jan 31, 2025</span>
+                      </div>
+                    </div>
+                    <div class="landlord-payment-actions">
+                      <button class="landlord-btn landlord-btn-outline landlord-btn-sm">
+                        Send Reminder
+                      </button>
+                      <button class="landlord-btn landlord-btn-primary landlord-btn-sm">
+                        Record Payment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Red Status - Overdue -->
+                <div class="landlord-payment-status-card landlord-payment-red">
+                  <div class="landlord-payment-status-header">
+                    <div class="landlord-payment-status-indicator">
+                      <span class="landlord-traffic-light landlord-light-red"></span>
+                      <span class="landlord-payment-status-label">Overdue</span>
+                    </div>
+                    <span class="landlord-payment-count">3 days late</span>
+                  </div>
+                  <div class="landlord-payment-status-body">
+                    <div class="landlord-payment-row">
+                      <div class="landlord-payment-info">
+                        <h4 class="landlord-payment-tenant-name">Pedro Cruz</h4>
+                        <p class="landlord-payment-property">Metro Boarding - Room 302</p>
+                      </div>
+                      <div class="landlord-payment-meta">
+                        <span class="landlord-payment-amount">₱5,000</span>
+                        <span class="landlord-payment-due">Was due: Jan 20, 2025</span>
+                      </div>
+                    </div>
+                    <div class="landlord-overdue-notice">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <div>
+                        <strong>Late fee applied:</strong> ₱250 | <strong>Total due:</strong> ₱5,250
+                      </div>
+                    </div>
+                    <div class="landlord-payment-actions">
+                      <button class="landlord-btn landlord-btn-outline landlord-btn-sm">
+                        Send Notice
+                      </button>
+                      <button class="landlord-btn landlord-btn-primary landlord-btn-sm">
+                        Record Payment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Application Review Queue -->
+            <div class="landlord-section">
+              <div class="landlord-section-header">
+                <h2 class="landlord-section-title">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  Application Review Queue
+                </h2>
+                <a href="applications/index.html" class="landlord-view-all">
+                  View all
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </a>
+              </div>
+              <div class="landlord-application-queue">
+                <!-- Application Item -->
+                <div class="landlord-application-card">
+                  <div class="landlord-application-header">
+                    <div class="landlord-application-info">
+                      <h3 class="landlord-application-name">Ana Garcia</h3>
+                      <p class="landlord-application-property">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                          />
+                        </svg>
+                        Sunrise Dormitory - Room 305
+                      </p>
+                    </div>
+                    <span class="landlord-status-badge landlord-status-new">New</span>
+                  </div>
+                  <div class="landlord-application-meta">
+                    <div class="landlord-meta-item">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      <span>BS Computer Science</span>
+                    </div>
+                    <div class="landlord-meta-item">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>Documents uploaded</span>
+                    </div>
+                  </div>
+                  <div class="landlord-application-actions">
+                    <button class="landlord-btn landlord-btn-outline landlord-btn-sm">
+                      View Details
+                    </button>
+                    <button class="landlord-btn landlord-btn-success landlord-btn-sm">
+                      Approve
+                    </button>
+                    <button class="landlord-btn landlord-btn-danger landlord-btn-sm">Reject</button>
+                  </div>
+                </div>
+
+                <!-- Second Application -->
+                <div class="landlord-application-card">
+                  <div class="landlord-application-header">
+                    <div class="landlord-application-info">
+                      <h3 class="landlord-application-name">Luis Torres</h3>
+                      <p class="landlord-application-property">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                          />
+                        </svg>
+                        Green Valley - Room 210
+                      </p>
+                    </div>
+                    <span class="landlord-status-badge landlord-status-review">Under Review</span>
+                  </div>
+                  <div class="landlord-application-meta">
+                    <div class="landlord-meta-item">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      <span>BS Engineering</span>
+                    </div>
+                    <div class="landlord-meta-item">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>Documents uploaded</span>
+                    </div>
+                  </div>
+                  <div class="landlord-application-actions">
+                    <button class="landlord-btn landlord-btn-outline landlord-btn-sm">
+                      View Details
+                    </button>
+                    <button class="landlord-btn landlord-btn-success landlord-btn-sm">
+                      Approve
+                    </button>
+                    <button class="landlord-btn landlord-btn-danger landlord-btn-sm">Reject</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Second Row: Quick Actions & Recent Activity -->
+          <div class="landlord-dashboard-grid">
+            <!-- Quick Actions -->
+            <div class="landlord-section">
+              <div class="landlord-section-header">
+                <h2 class="landlord-section-title">Quick Actions</h2>
+              </div>
+              <div class="landlord-quick-actions">
+                <a href="maps/index.html" class="landlord-action-btn">
+                  <div class="landlord-action-icon green">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  </div>
+                  <span class="landlord-action-label">Create Listing</span>
+                </a>
+                <a href="payments/record.html" class="landlord-action-btn">
+                  <div class="landlord-action-icon blue">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="landlord-action-label">Record Payment</span>
+                </a>
+                <a href="../messages/index.html" class="landlord-action-btn">
+                  <div class="landlord-action-icon purple">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="landlord-action-label">Send Announcement</span>
+                </a>
+                <a href="maintenance/index.html" class="landlord-action-btn">
+                  <div class="landlord-action-icon orange">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </div>
+                  <span class="landlord-action-label">Maintenance</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Recent Activity Feed -->
+            <div class="landlord-section">
+              <div class="landlord-section-header">
+                <h2 class="landlord-section-title">Recent Activity</h2>
+                <a href="#" class="landlord-view-all">
+                  View all
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </a>
+              </div>
+              <div class="landlord-activity-feed">
+                <div class="landlord-activity-item">
+                  <div class="landlord-activity-icon green">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="landlord-activity-content">
+                    <p class="landlord-activity-text">
+                      <strong>Maria Santos</strong> paid rent for
+                      <strong>Sunrise Dormitory</strong>
+                    </p>
+                    <span class="landlord-activity-time">2 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="landlord-activity-item">
+                  <div class="landlord-activity-icon blue">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="landlord-activity-content">
+                    <p class="landlord-activity-text">
+                      <strong>New application</strong> from Ana Garcia
+                    </p>
+                    <span class="landlord-activity-time">5 hours ago</span>
+                  </div>
+                </div>
+
+                <div class="landlord-activity-item">
+                  <div class="landlord-activity-icon yellow">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="landlord-activity-content">
+                    <p class="landlord-activity-text">
+                      <strong>Payment reminder</strong> sent to Jose Reyes
+                    </p>
+                    <span class="landlord-activity-time">1 day ago</span>
+                  </div>
+                </div>
+
+                <div class="landlord-activity-item">
+                  <div class="landlord-activity-icon orange">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="landlord-activity-content">
+                    <p class="landlord-activity-text">
+                      <strong>Maintenance request</strong> from Room 205
+                    </p>
+                    <span class="landlord-activity-time">2 days ago</span>
+                  </div>
+                </div>
+
+                <div class="landlord-activity-item">
+                  <div class="landlord-activity-icon purple">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="landlord-activity-content">
+                    <p class="landlord-activity-text">
+                      <strong>Lease renewed</strong> for Green Valley - Room 108
+                    </p>
+                    <span class="landlord-activity-time">3 days ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Third Row: Property Listings Overview -->
+          <div class="landlord-section-full">
+            <div class="landlord-section-header">
+              <h2 class="landlord-section-title">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
+                </svg>
+                Your Properties
+              </h2>
+              <a href="listings/index.html" class="landlord-view-all">
+                Manage all
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+            <div class="landlord-properties-grid">
+              <!-- Property Card 1 -->
+              <div class="landlord-property-card">
+                <div class="landlord-property-image">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                    />
+                  </svg>
+                </div>
+                <div class="landlord-property-info">
+                  <h3 class="landlord-property-name">Sunrise Dormitory</h3>
+                  <p class="landlord-property-location">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Sampaloc, Manila
+                  </p>
+                  <div class="landlord-property-stats">
+                    <div class="landlord-property-stat">
+                      <span class="landlord-stat-label">Occupancy</span>
+                      <span class="landlord-stat-value green">10/12 rooms</span>
+                    </div>
+                    <div class="landlord-property-stat">
+                      <span class="landlord-stat-label">Revenue</span>
+                      <span class="landlord-stat-value">₱27,500</span>
+                    </div>
+                  </div>
+                  <div class="landlord-property-actions">
+                    <a
+                      href="listings/edit.html"
+                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
+                    >
+                      Edit
+                    </a>
+                    <a
+                      href="boarders/index.html"
+                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
+                    >
+                      View Boarders
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Property Card 2 -->
+              <div class="landlord-property-card">
+                <div class="landlord-property-image">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                </div>
+                <div class="landlord-property-info">
+                  <h3 class="landlord-property-name">Green Valley Boarding House</h3>
+                  <p class="landlord-property-location">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Diliman, Quezon City
+                  </p>
+                  <div class="landlord-property-stats">
+                    <div class="landlord-property-stat">
+                      <span class="landlord-stat-label">Occupancy</span>
+                      <span class="landlord-stat-value yellow">6/10 rooms</span>
+                    </div>
+                    <div class="landlord-property-stat">
+                      <span class="landlord-stat-label">Revenue</span>
+                      <span class="landlord-stat-value">₱20,000</span>
+                    </div>
+                  </div>
+                  <div class="landlord-property-actions">
+                    <a
+                      href="listings/edit.html"
+                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
+                    >
+                      Edit
+                    </a>
+                    <a
+                      href="boarders/index.html"
+                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
+                    >
+                      View Boarders
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
     <!-- ES Module Entry Point -->
     <script type="module" src="../../js/main.js"></script>
   </body>

@@ -2,6 +2,7 @@ import { initLogoCloud } from './components/logo-cloud.js';
 import { initSidebar } from './components/sidebar.js';
 import { initNavbar } from './components/navbar.js';
 import { loadDashboardData } from './views/boarder/dashboard.js';
+import { initLandlordDashboard } from './views/landlord/landlord.js';
 
 // Initialize components
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,14 +15,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Only init sidebar if container exists (dashboard pages only)
   if (document.getElementById('sidebar-container')) {
-    initSidebar({
-      role: 'boarder',
-      user: {
-        name: 'Juan Dela Cruz',
-        initials: 'JD',
-        role: 'Boarder',
-      },
-    });
+    // Detect if this is a landlord dashboard page
+    const isLandlordDashboard = document.querySelector('.landlord-dashboard');
+    const isBoarderDashboard = document.querySelector('.boarder-dashboard');
+
+    if (isLandlordDashboard) {
+      initSidebar({
+        role: 'landlord',
+        user: {
+          name: 'Juan Dela Cruz',
+          initials: 'JD',
+          role: 'Landlord',
+        },
+      });
+
+      // Initialize landlord dashboard
+      initLandlordDashboard({
+        user: {
+          name: 'Juan',
+          initials: 'JD',
+          role: 'Landlord',
+        },
+      });
+    } else if (isBoarderDashboard) {
+      initSidebar({
+        role: 'boarder',
+        user: {
+          name: 'Juan Dela Cruz',
+          initials: 'JD',
+          role: 'Boarder',
+        },
+      });
+
+      // Initialize boarder dashboard
+      loadDashboardData();
+    } else {
+      // Default to boarder for other dashboard pages
+      initSidebar({
+        role: 'boarder',
+        user: {
+          name: 'Juan Dela Cruz',
+          initials: 'JD',
+          role: 'Boarder',
+        },
+      });
+    }
   }
 
   // Only init navbar if container exists (dashboard pages only)
@@ -34,11 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       notificationCount: 3,
     });
-  }
-
-  // Initialize boarder dashboard if on boarder dashboard page
-  if (document.querySelector('.boarder-dashboard')) {
-    loadDashboardData();
   }
 });
 
