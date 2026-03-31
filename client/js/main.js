@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: 'Juan Dela Cruz',
         initials: 'JD',
         avatarUrl: '', // Will use default sample.png
+        email: 'juan@example.com',
       },
       notificationCount: 3,
     });

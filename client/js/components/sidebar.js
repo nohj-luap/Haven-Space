@@ -174,7 +174,6 @@ export function initSidebar(options = {}) {
       renderNavigation(role);
       updateUserInfo(user);
       setActiveState();
-      setupLogoutHandler();
       setupToggleHandler();
       restoreCollapsedState();
     })
@@ -368,19 +367,6 @@ function setActiveState() {
       item.classList.add('active');
     }
   });
-}
-
-/**
- * Setup logout handler
- */
-function setupLogoutHandler() {
-  const logoutBtn = document.getElementById('sidebar-logout');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', e => {
-      e.preventDefault();
-      console.log('Logout clicked');
-    });
-  }
 }
 
 /**

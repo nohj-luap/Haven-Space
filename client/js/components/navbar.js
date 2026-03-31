@@ -7,7 +7,7 @@
  * Initialize navbar component
  * @param {Object} options - Configuration options
  * @param {string} options.containerId - ID of container element (default: 'navbar-container')
- * @param {Object} options.user - User info object with name, initials, avatarUrl
+ * @param {Object} options.user - User info object with name, initials, avatarUrl, email
  * @param {number} options.notificationCount - Number of unread notifications
  */
 export function initNavbar(options = {}) {
@@ -17,6 +17,7 @@ export function initNavbar(options = {}) {
       name: 'Juan Dela Cruz',
       initials: 'JD',
       avatarUrl: '',
+      email: 'juan@example.com',
     },
     notificationCount = 3,
   } = options;
@@ -43,6 +44,8 @@ export function initNavbar(options = {}) {
       setupThemeToggle();
       setupNotificationHandler();
       setupUserMenu();
+      setupUserMenuHandlers(user);
+      setupDocumentClickHandler();
     })
     .catch(err => {
       console.error('Failed to load navbar template:', err);
@@ -130,15 +133,95 @@ function setupNotificationHandler() {
  */
 function setupUserMenu() {
   const userBtn = document.getElementById('navbar-user');
-  if (userBtn) {
-    userBtn.addEventListener('click', () => {
-      // Emit custom event for user menu
-      window.dispatchEvent(new CustomEvent('navbar:user:click'));
+  const userMenu = document.getElementById('navbar-user-menu');
 
-      // Optional: Open user dropdown menu
-      console.log('User menu clicked');
+  if (userBtn && userMenu) {
+    userBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      userMenu.classList.toggle('show');
+
+      // Emit custom event for user menu
+      window.dispatchEvent(
+        new CustomEvent('navbar:user:click', {
+          detail: { isOpen: userMenu.classList.contains('show') },
+        })
+      );
     });
   }
+}
+
+/**
+ * Setup user menu item handlers
+ * @param {Object} user - User info object
+ */
+function setupUserMenuHandlers(user) {
+  // Update user menu info
+  const menuAvatar = document.getElementById('navbar-user-menu-avatar');
+  const menuName = document.getElementById('navbar-user-menu-name');
+  const menuEmail = document.getElementById('navbar-user-menu-email');
+
+  if (menuAvatar) menuAvatar.textContent = user.initials || 'JD';
+  if (menuName) menuName.textContent = user.name || 'Juan Dela Cruz';
+  if (menuEmail) menuEmail.textContent = user.email || 'juan@example.com';
+
+  // Profile menu item
+  const profileBtn = document.getElementById('navbar-menu-profile');
+  if (profileBtn) {
+    profileBtn.addEventListener('click', e => {
+      e.preventDefault();
+      console.log('Profile clicked');
+      window.dispatchEvent(new CustomEvent('navbar:user:profile:click'));
+      closeUserMenu();
+    });
+  }
+
+  // Settings menu item
+  const settingsBtn = document.getElementById('navbar-menu-settings');
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', e => {
+      e.preventDefault();
+      console.log('Settings clicked');
+      window.dispatchEvent(new CustomEvent('navbar:user:settings:click'));
+      closeUserMenu();
+    });
+  }
+
+  // Logout menu item
+  const logoutBtn = document.getElementById('navbar-menu-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', e => {
+      e.preventDefault();
+      console.log('Logout clicked');
+      window.dispatchEvent(new CustomEvent('navbar:user:logout:click'));
+      closeUserMenu();
+      // Add your logout logic here
+      // Example: window.location.href = '/auth/login.html';
+    });
+  }
+}
+
+/**
+ * Close user menu
+ */
+function closeUserMenu() {
+  const userMenu = document.getElementById('navbar-user-menu');
+  if (userMenu) {
+    userMenu.classList.remove('show');
+  }
+}
+
+/**
+ * Setup document click handler to close menu when clicking outside
+ */
+function setupDocumentClickHandler() {
+  document.addEventListener('click', e => {
+    const userMenu = document.getElementById('navbar-user-menu');
+    const userBtn = document.getElementById('navbar-user');
+
+    if (userMenu && userBtn && !userBtn.contains(e.target) && !userMenu.contains(e.target)) {
+      closeUserMenu();
+    }
+  });
 }
 
 /**

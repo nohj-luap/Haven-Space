@@ -377,44 +377,6 @@
   margin-top: 0.125rem;
 }
 
-.sidebar-logout {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  color: var(--text-gray);
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.15s ease;
-  justify-content: flex-start;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.sidebar-logout-text {
-  transition: opacity 0.2s ease, width 0.2s ease;
-}
-
-.sidebar.collapsed .sidebar-logout-text {
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.sidebar-logout:hover {
-  background: #fef2f2;
-  color: #dc2626;
-}
-
-.sidebar-logout svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar {
