@@ -14,12 +14,12 @@ class JWT
         self::$expiration = $config['jwt_expiration'];
     }
 
-    public static function generate(array $payload): string
+    public static function generate(array $payload, int $expiration = null): string
     {
         self::init();
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
         $payload['iat'] = time();
-        $payload['exp'] = time() + self::$expiration;
+        $payload['exp'] = time() + ($expiration ?? self::$expiration);
         $payload = json_encode($payload);
 
         $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));

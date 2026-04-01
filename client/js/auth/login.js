@@ -31,14 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        // Store JWT and user info
-        localStorage.setItem('token', result.token);
+        // Store user info (token is now in httpOnly cookie)
         localStorage.setItem('user', JSON.stringify(result.user));
 
         // Redirect based on role

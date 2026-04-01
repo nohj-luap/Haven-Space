@@ -2,10 +2,10 @@
 // Haven Space Database Configuration
 
 return [
-    'host' => '127.0.0.1',
-    'database' => 'havenspace_db',
-    'username' => 'root', // Default XAMPP username
-    'password' => '',     // Default XAMPP password (empty)
+    'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',
+    'database' => $_ENV['DB_NAME'] ?? 'havenspace_db',
+    'username' => $_ENV['DB_USER'] ?? 'root', // Default XAMPP username
+    'password' => $_ENV['DB_PASS'] ?? '',     // Default XAMPP password (empty)
     'charset' => 'utf8mb4',
     'options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

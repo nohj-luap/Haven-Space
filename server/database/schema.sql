@@ -33,4 +33,13 @@ CREATE TABLE IF NOT EXISTS properties (
     FOREIGN KEY (landlord_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Login Attempts Table
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL,
+    attempts INT DEFAULT 1,
+    last_attempt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX (ip_address)
+);
+
 -- More tables will be added as needed based on FEATURES_MODULES_AUTH.md

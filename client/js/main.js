@@ -32,7 +32,6 @@ function redirectToLogin() {
 
 // Initialize components
 document.addEventListener('DOMContentLoaded', async () => {
-  const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
   let user = userStr ? JSON.parse(userStr) : null;
 
@@ -50,45 +49,59 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Auth Guard
   if (isDashboard) {
-    if (!token) {
-      console.warn('No token found. Redirecting to login...');
+    // Verify token with backend
+    let authSuccess = false;
+    try {
+      const response = await fetch(`${CONFIG.API_BASE_URL}/auth/me.php`, {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        user = result.user;
+        localStorage.setItem('user', JSON.stringify(user));
+        authSuccess = true;
+      } else if (response.status === 401) {
+        // Try to refresh token
+        console.log('Access token expired, attempting refresh...');
+        const refreshResponse = await fetch(`${CONFIG.API_BASE_URL}/auth/refresh-token.php`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (refreshResponse.ok) {
+          // Retry me.php
+          const retryResponse = await fetch(`${CONFIG.API_BASE_URL}/auth/me.php`, {
+            credentials: 'include',
+          });
+          if (retryResponse.ok) {
+            const result = await retryResponse.json();
+            user = result.user;
+            localStorage.setItem('user', JSON.stringify(user));
+            authSuccess = true;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Auth verification failed:', error);
+    }
+
+    if (!authSuccess) {
+      console.warn('Authentication failed. Redirecting to login...');
+      localStorage.removeItem('user');
       redirectToLogin();
       return;
     }
 
-    // Verify token with backend
-    try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}/auth/me.php`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Token invalid or expired');
-      }
-
-      const result = await response.json();
-      // Use the user data from the token payload (or the user object returned by me.php)
-      user = result.user;
-      localStorage.setItem('user', JSON.stringify(user));
-
-      // Role-based Access Control
-      if (isLandlordDashboard && user.role !== 'landlord') {
-        console.warn('User is not a landlord. Redirecting to boarder dashboard...');
-        window.location.href = '../../boarder/index.html';
-        return;
-      }
-      if (isBoarderDashboard && user.role !== 'boarder') {
-        console.warn('User is not a boarder. Redirecting to landlord dashboard...');
-        window.location.href = '../../landlord/index.html';
-        return;
-      }
-    } catch (error) {
-      console.error('Auth verification failed:', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      redirectToLogin();
+    // Role-based Access Control
+    if (isLandlordDashboard && user.role !== 'landlord') {
+      console.warn('User is not a landlord. Redirecting to boarder dashboard...');
+      window.location.href = '../../boarder/index.html';
+      return;
+    }
+    if (isBoarderDashboard && user.role !== 'boarder') {
+      console.warn('User is not a boarder. Redirecting to landlord dashboard...');
+      window.location.href = '../../landlord/index.html';
       return;
     }
   }

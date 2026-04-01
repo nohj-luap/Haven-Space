@@ -40,10 +40,10 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-if (strlen($password) < 8) {
+if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $password)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Password must be at least 8 characters']);
-    exit;
+    echo json_encode(['error' => 'Password must be at least 8 characters and contain uppercase, lowercase, and numbers']);
+    exit();
 }
 
 if (!in_array($role, ['boarder', 'landlord'])) {

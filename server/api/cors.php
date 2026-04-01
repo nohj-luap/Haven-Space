@@ -26,11 +26,10 @@ header_remove('Access-Control-Allow-Credentials');
 // 2. Handle Origin
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
-} else if (empty($origin)) {
-    // If no origin, likely same-origin. Allow but no specific header needed.
 } else {
-    // For development, we fallback to * to allow all during debug
-    header('Access-Control-Allow-Origin: *');
+    // Unauthorized origin
+    http_response_code(403);
+    exit;
 }
 
 // 3. Mandatory CORS Headers
