@@ -212,13 +212,31 @@ function setupUserMenuHandlers(user) {
   // Logout menu item
   const logoutBtn = document.getElementById('navbar-menu-logout');
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', e => {
+    logoutBtn.addEventListener('click', async e => {
       e.preventDefault();
       console.log('Logout clicked');
+
+      try {
+        const basePath = resolveBasePath();
+        const configPath = `${basePath}/js/config.js`;
+        const { default: CONFIG } = await import(configPath);
+
+        await fetch(`${CONFIG.API_BASE_URL}/auth/logout.php`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+      } catch (error) {
+        console.error('Logout request failed:', error);
+      }
+
       window.dispatchEvent(new CustomEvent('navbar:user:logout:click'));
       closeUserMenu();
-      // Add your logout logic here
-      // Example: window.location.href = '/auth/login.html';
+
+      // Clear authentication data
+      localStorage.removeItem('user');
+
+      const basePath = resolveBasePath();
+      window.location.href = `${basePath}/views/public/auth/login.html`;
     });
   }
 }

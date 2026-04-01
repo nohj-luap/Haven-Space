@@ -137,6 +137,7 @@ export function initSidebar(options = {}) {
       updateUserInfo(user);
       setActiveState();
       setupToggleHandler();
+      setupLogoutHandler();
       restoreCollapsedState();
     })
     .catch(err => {
@@ -327,6 +328,38 @@ function setActiveState() {
       item.classList.add('active');
     }
   });
+}
+
+/**
+ * Setup logout handler
+ */
+function setupLogoutHandler() {
+  const logoutBtn =
+    document.getElementById('sidebar-logout') || document.getElementById('navbar-menu-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async e => {
+      e.preventDefault();
+
+      try {
+        const basePath = resolveBasePath();
+        const configPath = `${basePath}/js/config.js`;
+        const { default: CONFIG } = await import(configPath);
+
+        await fetch(`${CONFIG.API_BASE_URL}/auth/logout.php`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+      } catch (error) {
+        console.error('Logout request failed:', error);
+      }
+
+      // Clear authentication data
+      localStorage.removeItem('user');
+
+      const basePath = resolveBasePath();
+      window.location.href = `${basePath}/views/public/auth/login.html`;
+    });
+  }
 }
 
 /**
