@@ -22,13 +22,13 @@ function initFloatingHeader() {
   const handleScroll = () => {
     const scrollY = window.scrollY || window.pageYOffset;
     const isScrolled = scrollY > scrollThreshold;
-    const wasScrolled = navbar.classList.contains('scrolled');
+    const wasScrolled = navbar.classList.contains('navbar-scrolled');
 
     if (isScrolled !== wasScrolled) {
       if (isScrolled) {
-        navbar.classList.add('scrolled');
+        navbar.classList.add('navbar-scrolled');
       } else {
-        navbar.classList.remove('scrolled');
+        navbar.classList.remove('navbar-scrolled');
       }
     }
   };
@@ -43,14 +43,48 @@ function initFloatingHeader() {
  * Sets up homepage components (logo cloud, floating header)
  */
 export function initPublicViews() {
+  // Wait for DOM and images to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPublicComponents);
+  } else {
+    initPublicComponents();
+  }
+
+  console.log('PublicViews: Initialized');
+}
+
+/**
+ * Initialize public components after DOM is ready
+ */
+function initPublicComponents() {
   // Initialize logo cloud (homepage only)
   const logoSlider = document.getElementById('logoSlider');
   if (logoSlider) {
-    initLogoCloud();
+    // Wait for images to load before calculating dimensions
+    const images = logoSlider.querySelectorAll('img');
+    let loadedCount = 0;
+
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount === images.length) {
+        initLogoCloud();
+      }
+    };
+
+    if (images.length > 0) {
+      images.forEach(img => {
+        if (img.complete) {
+          checkAllLoaded();
+        } else {
+          img.addEventListener('load', checkAllLoaded);
+          img.addEventListener('error', checkAllLoaded); // Continue even if image fails
+        }
+      });
+    } else {
+      initLogoCloud();
+    }
   }
 
   // Initialize floating header (homepage only)
   initFloatingHeader();
-
-  console.log('PublicViews: Initialized');
 }

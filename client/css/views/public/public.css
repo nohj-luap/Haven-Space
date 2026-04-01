@@ -24,11 +24,11 @@
 }
 
 /* Scrolled state - floating pill */
-.navbar.scrolled {
+.navbar.navbar-scrolled {
   padding: 0;
 }
 
-.navbar.scrolled .nav-container {
+.navbar.navbar-scrolled .nav-container {
   max-width: 64rem;
   margin: 1rem auto;
   border-radius: 50px;

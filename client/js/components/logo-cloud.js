@@ -22,12 +22,24 @@ export function initLogoCloud() {
     const img = logoTrack.querySelector('img');
     if (!img) return 0;
     const gap = 42;
-    const logoWidth = img.offsetWidth;
+    // Use offsetWidth which includes padding/border, or getBoundingClientRect for more accuracy
+    const logoWidth = img.offsetWidth || img.getBoundingClientRect().width;
     const logoCount = logoTrack.children.length;
     return (logoWidth + gap) * logoCount - gap;
   };
 
   let trackWidth = getTrackWidth();
+
+  // Fallback: if trackWidth is 0, use a reasonable estimate
+  if (trackWidth === 0) {
+    console.warn('Logo cloud: trackWidth is 0, using fallback calculation');
+    // Assume average logo width of 100px
+    const gap = 42;
+    const logoCount = logoTrack.children.length;
+    trackWidth = (100 + gap) * logoCount - gap;
+  }
+
+  console.log('Logo cloud: trackWidth =', trackWidth);
 
   // Recalculate on window resize
   let resizeTimeout;
@@ -98,6 +110,7 @@ export function initLogoCloud() {
 
   // Initialize
   startAnimation();
+  console.log('Logo cloud: Animation started');
 
   // Cleanup function (if needed)
   return () => {
