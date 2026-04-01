@@ -110,6 +110,11 @@ const jsFiles = [
   'js/components/navbar.js',
   'js/components/sidebar.js',
   'js/shared/state.js',
+  // Entry point files (index.js for each role)
+  'js/views/public/index.js',
+  'js/views/admin/index.js',
+  'js/views/boarder/index.js',
+  'js/views/landlord/index.js',
   // Landing
   'js/views/landing/landing.js',
   // Admin
