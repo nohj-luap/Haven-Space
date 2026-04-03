@@ -283,15 +283,15 @@ function createPaymentRow(payment) {
       <td>
         <div class="payment-actions">
           <button class="landlord-btn landlord-btn-outline landlord-btn-sm view-payment-btn" data-payment-id="${
-  payment.id
-}">
+            payment.id
+          }">
             View
           </button>
           ${
-  payment.paidDate === null
-    ? `<button class="landlord-btn landlord-btn-primary landlord-btn-sm record-payment-btn" data-payment-id="${payment.id}">Record</button>`
-    : ''
-}
+            payment.paidDate === null
+              ? `<button class="landlord-btn landlord-btn-primary landlord-btn-sm record-payment-btn" data-payment-id="${payment.id}">Record</button>`
+              : ''
+          }
         </div>
       </td>
     </tr>
@@ -309,41 +309,41 @@ function createActivityItem(activity) {
   let activityText = '';
 
   switch (activity.type) {
-  case 'paid':
-    iconClass = 'icon-green';
-    iconSvg = `
+    case 'paid':
+      iconClass = 'icon-green';
+      iconSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       `;
-    activityText = `<strong>${activity.boarderName}</strong> paid for ${activity.property}`;
-    break;
-  case 'reminder_sent':
-    iconClass = 'icon-orange';
-    iconSvg = `
+      activityText = `<strong>${activity.boarderName}</strong> paid for ${activity.property}`;
+      break;
+    case 'reminder_sent':
+      iconClass = 'icon-orange';
+      iconSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       `;
-    activityText = `Reminder sent to <strong>${activity.boarderName}</strong>`;
-    break;
-  case 'overdue_notice':
-    iconClass = 'icon-red';
-    iconSvg = `
+      activityText = `Reminder sent to <strong>${activity.boarderName}</strong>`;
+      break;
+    case 'overdue_notice':
+      iconClass = 'icon-red';
+      iconSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       `;
-    activityText = `Overdue notice for <strong>${activity.boarderName}</strong>`;
-    break;
-  default:
-    iconClass = 'icon-blue';
-    iconSvg = `
+      activityText = `Overdue notice for <strong>${activity.boarderName}</strong>`;
+      break;
+    default:
+      iconClass = 'icon-blue';
+      iconSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       `;
-    activityText = `Activity for <strong>${activity.boarderName}</strong>`;
+      activityText = `Activity for <strong>${activity.boarderName}</strong>`;
   }
 
   return `
@@ -484,13 +484,13 @@ function showPaymentDetails(paymentId) {
       <span class="payment-detail-value">${formatDate(payment.dueDate)}</span>
     </div>
     ${
-  payment.paidDate
-    ? `<div class="payment-detail-row">
+      payment.paidDate
+        ? `<div class="payment-detail-row">
       <span class="payment-detail-label">Paid Date</span>
       <span class="payment-detail-value">${formatDate(payment.paidDate)}</span>
     </div>`
-    : ''
-}
+        : ''
+    }
     <div class="payment-detail-row">
       <span class="payment-detail-label">Status</span>
       <span class="payment-status-badge ${status.badgeClass}">
@@ -499,13 +499,13 @@ function showPaymentDetails(paymentId) {
       </span>
     </div>
     ${
-  status.daysInfo
-    ? `<div class="payment-detail-row">
+      status.daysInfo
+        ? `<div class="payment-detail-row">
       <span class="payment-detail-label">Days Info</span>
       <span class="payment-detail-value" style="color: var(--dashboard-${status.color})">${status.daysInfo}</span>
     </div>`
-    : ''
-}
+        : ''
+    }
   `;
 
   modal.classList.add('active');

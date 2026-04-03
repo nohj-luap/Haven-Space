@@ -218,8 +218,8 @@ function createPropertyCard(property) {
     property.status === 'active'
       ? 'Active'
       : property.status === 'full'
-        ? 'Fully Occupied'
-        : 'Inactive';
+      ? 'Fully Occupied'
+      : 'Inactive';
 
   card.innerHTML = `
     <div class="property-card-image">
@@ -292,15 +292,15 @@ function handlePropertyAction(action, id) {
   currentProperty = property;
 
   switch (action) {
-  case 'view':
-    openPropertyModal(property);
-    break;
-  case 'edit':
-    editProperty(property);
-    break;
-  case 'delete':
-    confirmDelete(property);
-    break;
+    case 'view':
+      openPropertyModal(property);
+      break;
+    case 'edit':
+      editProperty(property);
+      break;
+    case 'delete':
+      confirmDelete(property);
+      break;
   }
 }
 
@@ -319,14 +319,14 @@ function openPropertyModal(property) {
     .replace('-', ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
   document.getElementById(
-    'modal-property-location',
+    'modal-property-location'
   ).textContent = `${property.location}, ${property.province}`;
   document.getElementById(
-    'modal-property-price',
+    'modal-property-price'
   ).textContent = `₱${property.price.toLocaleString()}/month`;
   document.getElementById('modal-property-rooms').textContent = `${property.rooms} rooms`;
   document.getElementById('modal-property-occupancy').textContent = `${Math.round(
-    (property.occupied / property.rooms) * 100,
+    (property.occupied / property.rooms) * 100
   )}% (${property.occupied}/${property.rooms})`;
 
   const statusEl = document.getElementById('modal-property-status');
@@ -334,8 +334,8 @@ function openPropertyModal(property) {
     property.status === 'active'
       ? 'Active'
       : property.status === 'full'
-        ? 'Fully Occupied'
-        : 'Inactive';
+      ? 'Fully Occupied'
+      : 'Inactive';
   statusEl.className = `status-badge status-${property.status}`;
 
   document.getElementById('modal-property-description').textContent = property.description;
@@ -535,16 +535,16 @@ function filterAndSortProperties(searchQuery = '') {
   // Sort
   filtered.sort((a, b) => {
     switch (sortOption) {
-    case 'newest':
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    case 'oldest':
-      return new Date(a.createdAt) - new Date(b.createdAt);
-    case 'name':
-      return a.name.localeCompare(b.name);
-    case 'occupancy':
-      return b.occupied / b.rooms - a.occupied / a.rooms;
-    default:
-      return 0;
+      case 'newest':
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      case 'oldest':
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'occupancy':
+        return b.occupied / b.rooms - a.occupied / a.rooms;
+      default:
+        return 0;
     }
   });
 

@@ -123,7 +123,7 @@ export function applyStatusToElement(element, status) {
     'status-current',
     'status-red',
     'status-orange',
-    'status-green',
+    'status-green'
   );
 
   // Add the appropriate status class
@@ -277,16 +277,16 @@ export function createStatusBadge(status) {
   badge.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       ${
-  status.status === 'paid'
-    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'
-    : status.status === 'overdue'
-      ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
-      : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />'
-}
+        status.status === 'paid'
+          ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'
+          : status.status === 'overdue'
+          ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
+          : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />'
+      }
     </svg>
     ${status.label}${
-  status.days !== null && status.status !== 'paid' ? ` (${formatDaysRemaining(status.days)})` : ''
-}
+    status.days !== null && status.status !== 'paid' ? ` (${formatDaysRemaining(status.days)})` : ''
+  }
   `;
   return badge;
 }

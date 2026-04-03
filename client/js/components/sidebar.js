@@ -214,7 +214,7 @@ function renderNavigation(role, basePath) {
 <div class="sidebar-nav-group">
   <div class="sidebar-nav-title">${group.group}</div>
   ${group.items.map(item => renderNavItem(item, basePath)).join('')}
-</div>`,
+</div>`
     )
     .join('');
 
@@ -298,7 +298,7 @@ function setupDropdownHandlers() {
         const allDropdowns = document.querySelectorAll('.sidebar-nav-dropdown-content');
         const allDropdownContainers = document.querySelectorAll('.sidebar-nav-dropdown');
         const allIcons = document.querySelectorAll(
-          '.sidebar-nav-dropdown-toggle .sidebar-dropdown-icon',
+          '.sidebar-nav-dropdown-toggle .sidebar-dropdown-icon'
         );
 
         allDropdowns.forEach(d => {

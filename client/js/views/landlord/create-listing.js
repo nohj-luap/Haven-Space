@@ -372,9 +372,9 @@ function handleAddCustomAmenity() {
   tag.innerHTML = `
     ${value}
     <button type="button" onclick="removeCustomAmenity('${value.replace(
-    /'/g,
-    "\\'",
-  )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
+      /'/g,
+      "\\'"
+    )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
       ${getIcon('xMark', { width: 16, height: 16 })}
     </button>
   `;
@@ -404,9 +404,9 @@ function removeCustomAmenity(value) {
       tag.innerHTML = `
         ${amenity}
         <button type="button" onclick="removeCustomAmenity('${amenity.replace(
-    /'/g,
-    "\\'",
-  )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
+          /'/g,
+          "\\'"
+        )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
           ${getIcon('xMark', { width: 16, height: 16 })}
         </button>
       `;

@@ -92,7 +92,7 @@ function initializePaymentAlerts() {
 
         // Navigate to payment page with pre-filled details
         window.location.href = `../payments/pay.html?property=${encodeURIComponent(
-          propertyName,
+          propertyName
         )}&amount=${encodeURIComponent(amount)}`;
       });
     }
@@ -142,7 +142,7 @@ function getUserLocation() {
       error => {
         console.error('Error getting location:', error);
         alert('Unable to get your location. Please enable location permissions.');
-      },
+      }
     );
   } else {
     alert('Geolocation is not supported by your browser');
@@ -167,7 +167,7 @@ function initializeSavedSearches() {
       // In production, this would call an API to update notification preferences
       showNotification(
         isEnabled ? 'Search alerts enabled' : 'Search alerts disabled',
-        isEnabled ? 'success' : 'info',
+        isEnabled ? 'success' : 'info'
       );
     });
   });
@@ -198,10 +198,10 @@ function initializeDocumentVault() {
  */
 function initializeApplicationTracker() {
   const viewDetailButtons = document.querySelectorAll(
-    '.boarder-application-actions .boarder-btn-outline:first-child',
+    '.boarder-application-actions .boarder-btn-outline:first-child'
   );
   const actionButtons = document.querySelectorAll(
-    '.boarder-application-actions .boarder-btn-primary, .boarder-application-actions .boarder-btn-outline:last-child',
+    '.boarder-application-actions .boarder-btn-primary, .boarder-application-actions .boarder-btn-outline:last-child'
   );
 
   viewDetailButtons.forEach(btn => {
@@ -222,7 +222,7 @@ function initializeApplicationTracker() {
 
       if (action === 'Sign Contract') {
         window.location.href = `../applications/detail.html?name=${encodeURIComponent(
-          appName,
+          appName
         )}&action=sign`;
       } else if (action === 'Withdraw') {
         if (confirm(`Are you sure you want to withdraw your application for ${appName}?`)) {
@@ -340,7 +340,7 @@ async function loadDashboardData() {
 function updateDashboardUI() {
   // Update application count
   const activeApplications = dashboardState.applications.filter(
-    app => app.status === 'approved' || app.status === 'pending',
+    app => app.status === 'approved' || app.status === 'pending'
   ).length;
   const statValue = document.querySelector('.boarder-stat-card:first-child .boarder-stat-value');
   if (statValue) {
@@ -349,7 +349,7 @@ function updateDashboardUI() {
 
   // Update payment stats
   const upcomingPayments = dashboardState.payments.filter(
-    p => p.status === 'upcoming' || p.status === 'warning',
+    p => p.status === 'upcoming' || p.status === 'warning'
   ).length;
   console.log(`${upcomingPayments} upcoming payments`);
 }

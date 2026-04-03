@@ -247,15 +247,15 @@ function handleFilterChange(e) {
   const filterType = e.target.id.replace('-filter', '');
 
   switch (filterType) {
-  case 'price':
-    state.filters.price = e.target.value;
-    break;
-  case 'room-type':
-    state.filters.roomType = e.target.value;
-    break;
-  case 'distance':
-    state.filters.distance = e.target.value;
-    break;
+    case 'price':
+      state.filters.price = e.target.value;
+      break;
+    case 'room-type':
+      state.filters.roomType = e.target.value;
+      break;
+    case 'distance':
+      state.filters.distance = e.target.value;
+      break;
   }
 
   applyFilters();
@@ -346,7 +346,7 @@ function filterProperties() {
     // Amenities filter
     if (state.filters.amenities.length > 0) {
       const hasAllAmenities = state.filters.amenities.every(amenity =>
-        property.amenities.includes(amenity),
+        property.amenities.includes(amenity)
       );
 
       if (!hasAllAmenities) {
@@ -365,31 +365,31 @@ function sortProperties(propertiesList) {
   const sorted = [...propertiesList];
 
   switch (state.sort) {
-  case 'price-low':
-    sorted.sort((a, b) => a.price - b.price);
-    break;
-  case 'price-high':
-    sorted.sort((a, b) => b.price - a.price);
-    break;
-  case 'distance':
-    sorted.sort((a, b) => a.distance - b.distance);
-    break;
-  case 'rating':
-    sorted.sort((a, b) => b.rating - a.rating);
-    break;
-  case 'newest':
-    // Assuming newer properties have higher IDs
-    sorted.sort((a, b) => b.id - a.id);
-    break;
-  case 'recommended':
-  default:
-    // Recommended: prioritize verified, then rating, then price
-    sorted.sort((a, b) => {
-      const aScore = (a.badges.includes('verified') ? 10 : 0) + a.rating * 2 - a.price / 1000;
-      const bScore = (b.badges.includes('verified') ? 10 : 0) + b.rating * 2 - b.price / 1000;
-      return bScore - aScore;
-    });
-    break;
+    case 'price-low':
+      sorted.sort((a, b) => a.price - b.price);
+      break;
+    case 'price-high':
+      sorted.sort((a, b) => b.price - a.price);
+      break;
+    case 'distance':
+      sorted.sort((a, b) => a.distance - b.distance);
+      break;
+    case 'rating':
+      sorted.sort((a, b) => b.rating - a.rating);
+      break;
+    case 'newest':
+      // Assuming newer properties have higher IDs
+      sorted.sort((a, b) => b.id - a.id);
+      break;
+    case 'recommended':
+    default:
+      // Recommended: prioritize verified, then rating, then price
+      sorted.sort((a, b) => {
+        const aScore = (a.badges.includes('verified') ? 10 : 0) + a.rating * 2 - a.price / 1000;
+        const bScore = (b.badges.includes('verified') ? 10 : 0) + b.rating * 2 - b.price / 1000;
+        return bScore - aScore;
+      });
+      break;
   }
 
   return sorted;
@@ -421,29 +421,29 @@ function renderProperties(propertiesList) {
         />
         <div class="find-room-card-badges">
           ${property.badges
-    .map(
-      badge => `
+            .map(
+              badge => `
           <span class="find-room-badge find-room-badge-${badge}">
             ${badge === 'verified' ? badgeIcon() : ''}
             ${capitalizeFirstLetter(badge)}
           </span>
-          `,
-    )
-    .join('')}
+          `
+            )
+            .join('')}
         </div>
         <button class="find-room-favorite-btn" data-favorite="false">
           ${heartIcon(false)}
         </button>
         <div class="find-room-card-amenities-preview">
           ${property.amenities
-    .slice(0, 3)
-    .map(amenity => getAmenityIcon(amenity))
-    .join('')}
+            .slice(0, 3)
+            .map(amenity => getAmenityIcon(amenity))
+            .join('')}
           ${
-  property.amenities.length > 3
-    ? `<span class="find-room-amenity-more">+${property.amenities.length - 3}</span>`
-    : ''
-}
+            property.amenities.length > 3
+              ? `<span class="find-room-amenity-more">+${property.amenities.length - 3}</span>`
+              : ''
+          }
         </div>
       </div>
       <div class="find-room-card-content">
@@ -451,8 +451,8 @@ function renderProperties(propertiesList) {
           <div class="find-room-card-location">
             ${locationIcon()}
             <span class="find-room-card-distance">${property.distance} km from ${
-  property.location.split(' ')[0]
-}</span>
+        property.location.split(' ')[0]
+      }</span>
           </div>
           <div class="find-room-card-rating">
             ${starIcon()}
@@ -484,7 +484,7 @@ function renderProperties(propertiesList) {
         </div>
       </div>
     </div>
-  `,
+  `
     )
     .join('');
 
@@ -566,7 +566,7 @@ function updateActiveFilters() {
 
   if (state.filters.roomType !== 'any') {
     tags.push(
-      createFilterTag('roomType', `Type: ${capitalizeFirstLetter(state.filters.roomType)}`),
+      createFilterTag('roomType', `Type: ${capitalizeFirstLetter(state.filters.roomType)}`)
     );
   }
 
