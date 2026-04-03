@@ -140,7 +140,7 @@ function handleTicketView(ticketId) {
 
   // Show a simple alert for demo purposes
   alert(
-    `Viewing details for ticket #${ticketId}\n\nThis feature will open the ticket detail view.`
+    `Viewing details for ticket #${ticketId}\n\nThis feature will open the ticket detail view.`,
   );
 }
 

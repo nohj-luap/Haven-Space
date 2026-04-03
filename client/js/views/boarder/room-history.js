@@ -117,17 +117,17 @@ function handleActionButtonClick(event) {
   console.log(`Action: ${action}, Residence: ${residenceName}`);
 
   switch (action) {
-    case 'view-details':
-      handleViewDetails(residenceCard);
-      break;
-    case 'view-payments':
-      handleViewPayments(residenceCard);
-      break;
-    case 'view-maintenance':
-      handleViewMaintenance(residenceCard);
-      break;
-    default:
-      console.warn('Unknown action:', action);
+  case 'view-details':
+    handleViewDetails(residenceCard);
+    break;
+  case 'view-payments':
+    handleViewPayments(residenceCard);
+    break;
+  case 'view-maintenance':
+    handleViewMaintenance(residenceCard);
+    break;
+  default:
+    console.warn('Unknown action:', action);
   }
 }
 
@@ -225,7 +225,7 @@ function animateStats() {
     },
     {
       threshold: 0.5,
-    }
+    },
   );
 
   statValues.forEach(stat => {
@@ -424,7 +424,7 @@ function showResidenceDetailsModal(details) {
   const closeBtn = modal.querySelector('.room-history-modal-close');
   const overlay = modal.querySelector('.room-history-modal-overlay');
   const footerCloseBtn = modal.querySelector(
-    '.room-history-modal-footer .room-history-modal-btn:not(.primary)'
+    '.room-history-modal-footer .room-history-modal-btn:not(.primary)',
   );
 
   const closeModal = () => {
@@ -458,6 +458,6 @@ function showMaintenanceLogModal(residenceName) {
   console.log('Maintenance log for:', residenceName);
   // TODO: Implement maintenance log modal with actual data
   alert(
-    `Maintenance log for ${residenceName}\n\nThis would show all maintenance requests and their status.`
+    `Maintenance log for ${residenceName}\n\nThis would show all maintenance requests and their status.`,
   );
 }

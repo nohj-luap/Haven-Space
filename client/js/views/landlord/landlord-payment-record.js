@@ -173,10 +173,10 @@ function populateBoarderDropdown() {
         payment => `
       <option value="${payment.id}">
         ${payment.boarderName} - ${payment.property} (${payment.period}) - ${formatCurrency(
-          payment.amount
-        )}
+  payment.amount,
+)}
       </option>
-    `
+    `,
       )
       .join('');
 }
@@ -355,8 +355,8 @@ function showBoarderSubmissionNotification(payment) {
       </h4>
       <p style="font-size: 13px; color: var(--dashboard-text-secondary);">
         ${payment.boarderName} submitted their payment via ${
-    payment.boarderSubmittedPayment.paymentMethod === 'gcash' ? 'GCash' : 'Bank Transfer'
-  }. 
+  payment.boarderSubmittedPayment.paymentMethod === 'gcash' ? 'GCash' : 'Bank Transfer'
+}. 
         Reference number has been pre-filled for your convenience.
       </p>
     </div>
@@ -687,15 +687,15 @@ function showConfirmationModal(paymentData) {
       <span class="confirmation-value">${methodLabels[paymentData.paymentMethod]}</span>
     </div>
     ${
-      paymentData.referenceNumber
-        ? `
+  paymentData.referenceNumber
+    ? `
     <div class="confirmation-row">
       <span class="confirmation-label">Reference Number</span>
       <span class="confirmation-value">${paymentData.referenceNumber}</span>
     </div>
     `
-        : ''
-    }
+    : ''
+}
     <div class="confirmation-row">
       <span class="confirmation-label">Payment Date</span>
       <span class="confirmation-value">${formatDate(paymentData.paymentDate)}</span>

@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
           'Code entered:',
           Array.from(codeInputs)
             .map(input => input.value)
-            .join('')
+            .join(''),
         );
       }
     });

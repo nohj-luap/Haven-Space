@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
           error => {
             locateBtn.classList.remove('loading');
             alert('Could not get your location. Please check browser permissions.');
-          }
+          },
         );
       } else {
         alert('Geolocation is not supported by your browser.');
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         enableHighAccuracy: false,
         timeout: 5000,
         maximumAge: 0,
-      }
+      },
     );
   }
 

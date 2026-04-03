@@ -656,9 +656,9 @@ function handleAddCustomAmenity() {
   tag.innerHTML = `
     ${value}
     <button type="button" onclick="removeCustomAmenity('${value.replace(
-      /'/g,
-      "\\'"
-    )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
+    /'/g,
+    "\\'",
+  )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
       ${getIcon('xMark', { width: 16, height: 16 })}
     </button>
   `;
@@ -688,9 +688,9 @@ function removeCustomAmenity(value) {
       tag.innerHTML = `
         ${amenity}
         <button type="button" onclick="removeCustomAmenity('${amenity.replace(
-          /'/g,
-          "\\'"
-        )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
+    /'/g,
+    "\\'",
+  )}')" style="background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; color: var(--primary-green);">
           ${getIcon('xMark', { width: 16, height: 16 })}
         </button>
       `;
@@ -891,39 +891,39 @@ function renderRoomsList() {
         <div class="room-actions">
           <select class="room-status-select" data-room-id="${room.id}">
             <option value="available" ${
-              room.status === 'available' ? 'selected' : ''
-            }>Available</option>
+  room.status === 'available' ? 'selected' : ''
+}>Available</option>
             <option value="occupied" ${
-              room.status === 'occupied' ? 'selected' : ''
-            }>Occupied</option>
+  room.status === 'occupied' ? 'selected' : ''
+}>Occupied</option>
           </select>
           ${
-            room.status === 'available'
-              ? `
+  room.status === 'available'
+    ? `
             <button type="button" class="btn-upload-image" data-room-id="${
-              room.id
-            }" title="Upload images">
+  room.id
+}" title="Upload images">
               ${getIcon('photo')}
               ${imageCount > 0 ? imageCount : 'Add'}
             </button>
           `
-              : ''
-          }
+    : ''
+}
         </div>
       </div>
       ${
-        imageCount > 0
-          ? `
+  imageCount > 0
+    ? `
         <div class="room-image-preview">
           ${room.images
-            .slice(0, 3)
-            .map(img => `<img src="${img}" alt="${room.number}" data-room-id="${room.id}" />`)
-            .join('')}
+    .slice(0, 3)
+    .map(img => `<img src="${img}" alt="${room.number}" data-room-id="${room.id}" />`)
+    .join('')}
           ${imageCount > 3 ? `<span class="more-images">+${imageCount - 3}</span>` : ''}
         </div>
       `
-          : ''
-      }
+    : ''
+}
     `;
 
     roomsList.appendChild(roomEl);

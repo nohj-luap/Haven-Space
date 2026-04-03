@@ -22,21 +22,21 @@ function detectAndInitialize() {
   console.log('Main: Detected view:', view, 'Dashboard type:', dashboardType);
 
   switch (view) {
-    case 'public':
-      initPublicViews();
-      break;
-    case 'boarder':
-      initBoarderDashboard();
-      break;
-    case 'landlord':
-      initLandlordDashboardEntry();
-      break;
-    case 'admin':
-      initAdminDashboard();
-      break;
-    default:
-      console.warn('Main: Unknown view type:', view);
-      initPublicViews();
+  case 'public':
+    initPublicViews();
+    break;
+  case 'boarder':
+    initBoarderDashboard();
+    break;
+  case 'landlord':
+    initLandlordDashboardEntry();
+    break;
+  case 'admin':
+    initAdminDashboard();
+    break;
+  default:
+    console.warn('Main: Unknown view type:', view);
+    initPublicViews();
   }
 }
 

@@ -95,7 +95,7 @@ function setupDocumentDownloadHandlers() {
       // Mock download for development
       console.log(`TODO: Download document with ID: ${docId}`);
       alert(
-        `TODO: Backend Integration\n\nDownloading document: ${docId}\n\nThis will connect to the backend API to fetch the actual document.`
+        `TODO: Backend Integration\n\nDownloading document: ${docId}\n\nThis will connect to the backend API to fetch the actual document.`,
       );
     });
   });

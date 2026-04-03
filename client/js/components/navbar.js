@@ -175,7 +175,7 @@ function setupUserMenu() {
       window.dispatchEvent(
         new CustomEvent('navbar:user:click', {
           detail: { isOpen: userMenu.classList.contains('show') },
-        })
+        }),
       );
     });
   }
