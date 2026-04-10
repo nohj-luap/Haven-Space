@@ -8,8 +8,12 @@ function detectEnvironment() {
   const hostname = window.location.hostname;
 
   // Production environments
-  const productionHosts = ['havenspace.com', 'www.havenspace.com'];
-  if (productionHosts.includes(hostname) || hostname.includes('havenspace')) {
+  const productionHosts = ['havenspace.com', 'www.havenspace.com', 'onrender.com'];
+  if (
+    productionHosts.includes(hostname) ||
+    hostname.includes('havenspace') ||
+    hostname.includes('render')
+  ) {
     return 'production';
   }
 
@@ -34,7 +38,7 @@ function getApiBaseUrl() {
   const env = detectEnvironment();
 
   const apiUrls = {
-    production: 'https://your-production-domain.com/api', // Update with your production URL
+    production: 'https://haven-space-api.onrender.com/api', // Production API on Render
     'local-apache': 'http://localhost/haven-space/server/api', // XAMPP Apache
     'local-dev': 'http://localhost:8000', // PHP built-in server
   };
