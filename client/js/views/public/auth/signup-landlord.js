@@ -1223,22 +1223,72 @@ async function submitSignup() {
       }
     }
 
-    // Success - clear state and redirect
+    // Success - auto-login landlord and show welcome modal
     clearState();
 
-    showToast(
-      'Account created successfully! Please check your email for verification, then login to manage your property.',
-      'success'
-    );
+    // Store user info in localStorage for auto-login
+    const userData = {
+      id: userId,
+      firstName: signupState.step1.firstName,
+      lastName: signupState.step1.lastName,
+      email: signupState.step1.email,
+      role: 'landlord',
+    };
+    localStorage.setItem('user', JSON.stringify(userData));
 
-    const basePath = getBasePath();
-    window.location.href = `${basePath}public/auth/login.html`;
+    // Show welcome modal
+    showWelcomeModal(userData);
   } catch (error) {
     console.error('Error during signup:', error);
     showToast(error.message || 'An error occurred. Please try again.', 'error');
     submitBtn.disabled = false;
     submitBtn.textContent = 'Create Account & List Property';
   }
+}
+
+/**
+ * Show welcome modal after successful signup
+ * @param {Object} userData - User data object
+ */
+function showWelcomeModal(userData) {
+  const modal = document.createElement('div');
+  modal.className = 'welcome-modal-overlay';
+  modal.innerHTML = `
+    <div class="welcome-modal">
+      <div class="welcome-modal-icon">
+        ${getIcon('checkCircle', { width: 64, height: 64, strokeWidth: '1.5' })}
+      </div>
+      <h2 class="welcome-modal-title">Welcome to Haven Space!</h2>
+      <p class="welcome-modal-message">
+        Thank you for applying, Landlord! We are now verifying your application. 
+        You can browse your dashboard while you wait.
+      </p>
+      <div class="welcome-modal-actions">
+        <button class="welcome-modal-btn welcome-modal-btn-primary" id="goToDashboardBtn">
+          ${getIcon('dashboard', { width: 20, height: 20, strokeWidth: '2' })}
+          Go to Dashboard
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Add animation
+  setTimeout(() => {
+    modal.classList.add('welcome-modal-overlay-visible');
+  }, 10);
+
+  // Setup event listeners
+  const dashboardBtn = modal.querySelector('#goToDashboardBtn');
+  dashboardBtn.addEventListener('click', () => {
+    modal.classList.remove('welcome-modal-overlay-visible');
+    setTimeout(() => {
+      modal.remove();
+      const basePath = getBasePath();
+      window.location.href = `${basePath}views/landlord/index.html`;
+    }, 200);
+  });
 }
 
 /**
