@@ -3,8 +3,8 @@
  * Manages boarder status banners and conditional UI elements
  */
 
-import { getIcon } from '../shared/icons.js';
-import { getBoarderStatus, updateBoarderStatus, getBasePath } from '../shared/routing.js';
+import { getIcon } from '../../shared/icons.js';
+import { getBoarderStatus, updateBoarderStatus, getBasePath } from '../../shared/routing.js';
 
 /**
  * Status banner templates

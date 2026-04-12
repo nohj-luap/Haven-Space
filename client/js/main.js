@@ -3,40 +3,45 @@
  *
  * Detects current view and initializes appropriate components
  * Uses data attributes on body to detect view type
+ * Uses dynamic imports to isolate failures - a broken view won't break others
  */
-
-import { initPublicViews } from './views/public/index.js';
-import { initHavenAIPage } from './views/public/haven-ai.js';
-import { initBoarderDashboard } from './views/boarder/index.js';
-import { initLandlordDashboardEntry } from './views/landlord/index.js';
-import { initAdminDashboard } from './views/admin/index.js';
 
 /**
  * Detect current view and initialize appropriate components
  * Uses data attribute on body to detect view type
  */
-function detectAndInitialize() {
+async function detectAndInitialize() {
   const body = document.body;
   const view = body.dataset.view || 'public';
 
   // Initialize appropriate dashboard based on view type
   switch (view) {
-    case 'boarder':
+    case 'boarder': {
+      const { initBoarderDashboard } = await import('./views/boarder/index.js');
       initBoarderDashboard();
       break;
-    case 'landlord':
+    }
+    case 'landlord': {
+      const { initLandlordDashboardEntry } = await import('./views/landlord/index.js');
       initLandlordDashboardEntry();
       break;
-    case 'admin':
+    }
+    case 'admin': {
+      const { initAdminDashboard } = await import('./views/admin/index.js');
       initAdminDashboard();
       break;
-    case 'haven-ai':
+    }
+    case 'haven-ai': {
+      const { initHavenAIPage } = await import('./views/public/haven-ai.js');
       initHavenAIPage();
       break;
+    }
     case 'public':
-    default:
+    default: {
+      const { initPublicViews } = await import('./views/public/index.js');
       initPublicViews();
       break;
+    }
   }
 }
 
