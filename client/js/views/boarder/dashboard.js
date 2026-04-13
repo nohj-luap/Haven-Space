@@ -334,9 +334,7 @@ function updateDashboardUI() {
   }
 
   // Update payment stats
-  dashboardState.payments.filter(
-    p => p.status === 'upcoming' || p.status === 'warning'
-  ).length;
+  dashboardState.payments.filter(p => p.status === 'upcoming' || p.status === 'warning').length;
 }
 
 /**
