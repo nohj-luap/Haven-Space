@@ -8,6 +8,7 @@ import CONFIG from '../../config.js';
 import { initSidebar } from '../../components/sidebar.js';
 import { initNavbar } from '../../components/navbar.js';
 import { loadDashboardData } from './dashboard.js';
+import { initMessages } from './messages.js';
 import { initFindARoom } from './boarder-find-a-room.js';
 import { initLeasePage } from './lease.js';
 import { initPaymentPage } from './boarder-payment-process.js';
@@ -41,7 +42,13 @@ function initialsFrom(user) {
 export async function initBoarderDashboard() {
   let user;
   try {
-    const res = await fetch(`${CONFIG.API_BASE_URL}/auth/me.php`, { credentials: 'include' });
+    const res = await fetch(`${CONFIG.API_BASE_URL}/auth/me.php`, {
+      method: 'GET',
+      headers: {
+        'X-User-Id': localStorage.getItem('user_id') || '3',
+      },
+      credentials: 'include',
+    });
     if (!res.ok) {
       window.location.href = loginPath();
       return;
@@ -98,6 +105,10 @@ export async function initBoarderDashboard() {
 
   if (currentPath.includes('find-a-room')) {
     initFindARoom();
+  }
+
+  if (currentPath.includes('messages')) {
+    initMessages();
   }
 
   if (currentPath.includes('lease')) {
