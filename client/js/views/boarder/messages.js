@@ -26,7 +26,7 @@ export function initMessages() {
   initSendMessage();
   initNewMessageModal();
   initAttachmentDownload();
-  
+
   // Refresh conversations periodically
   setInterval(loadConversations, 10000);
 }
@@ -41,14 +41,14 @@ async function loadConversations() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/messages/conversations`, {
       method: 'GET',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'X-User-Id': getCurrentUserId()
+        'X-User-Id': getCurrentUserId(),
       },
     });
-    
+
     if (!response.ok) throw new Error('Failed to load conversations');
-    
+
     const result = await response.json();
     conversations = result.data || [];
 
@@ -111,7 +111,9 @@ function createConversationItem(conv) {
   const lastMessage = conv.last_message || 'No messages yet';
   const lastMessageAt = conv.last_message_at ? formatRelativeTime(conv.last_message_at) : '';
 
-  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.title)}&background=random&color=fff`;
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    conv.title
+  )}&background=random&color=fff`;
 
   item.innerHTML = `
     <div class="conversation-avatar">
@@ -134,7 +136,7 @@ function createConversationItem(conv) {
     const newUrl = new URL(window.location);
     newUrl.searchParams.set('id', conv.id);
     window.history.pushState({}, '', newUrl);
-    
+
     loadConversation(conv.id);
   });
   return item;
@@ -148,26 +150,26 @@ async function loadConversation(conversationId) {
 
   // Update active state in UI
   document.querySelectorAll('.conversation-item').forEach(item => {
-    item.classList.toggle('active', parseInt(item.dataset.conversationId) === parseInt(conversationId));
+    item.classList.toggle(
+      'active',
+      parseInt(item.dataset.conversationId) === parseInt(conversationId)
+    );
   });
 
   const chatMessages = document.getElementById('chat-messages');
   if (!chatMessages) return;
 
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/messages/conversations/${conversationId}`,
-      {
-        method: 'GET',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-User-Id': getCurrentUserId()
-        },
-      }
-    );
-    
+    const response = await fetch(`${API_BASE_URL}/api/messages/conversations/${conversationId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-User-Id': getCurrentUserId(),
+      },
+    });
+
     if (!response.ok) throw new Error('Failed to load conversation');
-    
+
     const result = await response.json();
     const conv = result.data;
 
@@ -204,7 +206,9 @@ function updateChatHeader(conv) {
   if (chatName) chatName.textContent = conv.title;
   if (chatStatus) chatStatus.textContent = conv.is_system_thread ? 'System Thread' : 'Online';
   if (chatAvatar) {
-    chatAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.title)}&background=random&color=fff`;
+    chatAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      conv.title
+    )}&background=random&color=fff`;
   }
 }
 
@@ -240,18 +244,26 @@ function createMessageElement(msg) {
   const attachmentsHtml =
     msg.attachments && msg.attachments.length > 0 ? renderAttachments(msg.attachments) : '';
 
-  const avatarUrl = msg.sender_name 
-    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.sender_name)}&background=random&color=fff`
+  const avatarUrl = msg.sender_name
+    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        msg.sender_name
+      )}&background=random&color=fff`
     : '../../../assets/images/default-avatar.png';
 
   messageItem.innerHTML = `
     ${
       !isSent
-        ? `<div class="message-avatar"><img src="${avatarUrl}" alt="${escapeHtml(msg.sender_name || 'Avatar')}" /></div>`
+        ? `<div class="message-avatar"><img src="${avatarUrl}" alt="${escapeHtml(
+            msg.sender_name || 'Avatar'
+          )}" /></div>`
         : ''
     }
     <div class="message-content ${isSent ? 'message-content-sent' : ''}">
-      ${!isSent && msg.sender_name ? `<span class="sender-name">${escapeHtml(msg.sender_name)}</span>` : ''}
+      ${
+        !isSent && msg.sender_name
+          ? `<span class="sender-name">${escapeHtml(msg.sender_name)}</span>`
+          : ''
+      }
       <div class="message-bubble ${isSent ? 'message-bubble-sent' : ''}">
         ${msg.message_text ? `<p>${escapeHtml(msg.message_text)}</p>` : ''}
         ${attachmentsHtml}
@@ -297,9 +309,9 @@ async function markAsRead(conversationId) {
   try {
     await fetch(`${API_BASE_URL}/api/messages/conversations/${conversationId}/read`, {
       method: 'PUT',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'X-User-Id': getCurrentUserId()
+        'X-User-Id': getCurrentUserId(),
       },
     });
   } catch (error) {
@@ -379,30 +391,30 @@ async function sendMessage() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/messages`, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'X-User-Id': getCurrentUserId()
+        'X-User-Id': getCurrentUserId(),
       },
       body: JSON.stringify({
         conversation_id: currentConversationId,
         message_text: messageText,
       }),
     });
-  
+
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error || 'Failed to send message');
     }
-  
+
     const result = await response.json();
-  
+
     // Update local UI immediately for responsiveness
     // (Actual re-fetch will happen via the service result)
     renderMessages(result.data.messages || []);
     scrollToBottom();
-  
+
     chatInput.value = '';
-    
+
     // Refresh conversation list to update last message
     loadConversations();
   } catch (error) {
@@ -424,7 +436,7 @@ function initNewMessageModal() {
   const cancelBtn = document.getElementById('modal-cancel-btn');
   const form = document.getElementById('new-message-form');
   const recipientInput = document.getElementById('message-recipient');
-  
+
   if (!newMessageBtn || !modal) return;
 
   // State for selected recipient
@@ -455,7 +467,7 @@ function initNewMessageModal() {
     recipientInput.addEventListener('input', e => {
       const query = e.target.value.trim();
       clearTimeout(debounceTimer);
-      
+
       if (query.length < 2) {
         const existingDropdown = document.querySelector('.search-results-dropdown');
         if (existingDropdown) existingDropdown.remove();
@@ -465,9 +477,12 @@ function initNewMessageModal() {
       debounceTimer = setTimeout(async () => {
         try {
           const roleToSearch = 'landlord'; // Boarders search for landlords
-          const response = await fetch(`${API_BASE_URL}/api/users/search?q=${encodeURIComponent(query)}&role=${roleToSearch}`, {
-            headers: { 'X-User-Id': getCurrentUserId() }
-          });
+          const response = await fetch(
+            `${API_BASE_URL}/api/users/search?q=${encodeURIComponent(query)}&role=${roleToSearch}`,
+            {
+              headers: { 'X-User-Id': getCurrentUserId() },
+            }
+          );
           const result = await response.json();
           renderSearchResults(result.data, recipientInput);
         } catch (error) {
@@ -490,7 +505,9 @@ function initNewMessageModal() {
       return;
     }
 
-    dropdown.innerHTML = users.map(user => `
+    dropdown.innerHTML = users
+      .map(
+        user => `
       <div class="search-result-item" data-id="${user.id}">
         <div class="search-result-avatar">
           <img src="${user.avatar_url || '../../../assets/images/default-avatar.png'}" alt="">
@@ -500,7 +517,9 @@ function initNewMessageModal() {
           <div class="search-result-email">${escapeHtml(user.email)}</div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
 
     dropdown.querySelectorAll('.search-result-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -527,9 +546,9 @@ function initNewMessageModal() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/messages/new`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': getCurrentUserId()
+          'X-User-Id': getCurrentUserId(),
         },
         body: JSON.stringify({
           recipient_id: selectedRecipientId,
@@ -542,7 +561,7 @@ function initNewMessageModal() {
       const result = await response.json();
       showSuccess('Message sent successfully!');
       closeModal();
-      
+
       // Load the new conversation
       await loadConversations();
       if (result.data && result.data.id) {
@@ -571,16 +590,16 @@ async function updateNotificationBadge() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/messages/unread-count`, {
       method: 'GET',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'X-User-Id': getCurrentUserId()
+        'X-User-Id': getCurrentUserId(),
       },
     });
-  
+
     if (response.ok) {
       const result = await response.json();
       const count = result.data?.unread_count || 0;
-  
+
       const badge = document.getElementById('notification-badge');
       if (badge) {
         badge.textContent = count;
