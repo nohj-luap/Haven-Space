@@ -1,0 +1,97 @@
+<?php
+/**
+ * Landlord Properties API
+ * GET /api/landlord/properties.php
+ *
+ * Returns all properties for the logged-in landlord with:
+ * - Property details
+ * - Room counts (total, occupied)
+ * - Monthly revenue
+ */
+
+require_once __DIR__ . '/../cors.php';
+
+if (!function_exists('json_response')) {
+    require_once __DIR__ . '/../../src/Core/bootstrap.php';
+    require_once __DIR__ . '/../../src/Shared/Helpers/ResponseHelper.php';
+}
+
+require_once __DIR__ . '/../middleware.php';
+
+use App\Api\Middleware;
+use App\Core\Database\Connection;
+
+// Only allow GET requests
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    json_response(405, ['error' => 'Method not allowed']);
+}
+
+// Authenticate user and authorize as landlord
+$user = Middleware::authorize(['landlord']);
+$landlordId = $user['user_id'];
+
+try {
+    $pdo = Connection::getInstance()->getPdo();
+
+    $stmt = $pdo->prepare("
+        SELECT 
+            p.id,
+            p.title,
+            p.address,
+            p.price,
+            p.status,
+            p.listing_moderation_status,
+            p.created_at,
+            COUNT(DISTINCT r.id) as total_rooms,
+            COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN 1 ELSE 0 END), 0) as occupied_rooms,
+            COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN r.price ELSE 0 END), 0) as monthly_revenue
+        FROM properties p
+        LEFT JOIN rooms r ON p.id = r.property_id
+        WHERE p.landlord_id = ? AND p.deleted_at IS NULL
+        GROUP BY p.id, p.title, p.address, p.price, p.status, p.listing_moderation_status, p.created_at
+        ORDER BY p.created_at DESC
+    ");
+    $stmt->execute([$landlordId]);
+    $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Transform data for frontend
+    $transformedProperties = array_map(function($property) {
+        $totalRooms = intval($property['total_rooms']);
+        $occupiedRooms = intval($property['occupied_rooms']);
+        $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0;
+
+        // Determine status based on occupancy
+        $displayStatus = 'active';
+        if ($property['listing_moderation_status'] === 'rejected') {
+            $displayStatus = 'inactive';
+        } elseif ($occupancyRate === 100 && $totalRooms > 0) {
+            $displayStatus = 'full';
+        }
+
+        return [
+            'id' => intval($property['id']),
+            'name' => htmlspecialchars($property['title']),
+            'address' => htmlspecialchars($property['address']),
+            'city' => '',
+            'province' => '',
+            'price' => floatval($property['price']),
+            'status' => $displayStatus,
+            'total_rooms' => $totalRooms,
+            'occupied_rooms' => $occupiedRooms,
+            'monthly_revenue' => floatval($property['monthly_revenue']),
+            'created_at' => $property['created_at'],
+        ];
+    }, $properties);
+
+    json_response(200, [
+        'data' => [
+            'properties' => $transformedProperties,
+            'total_count' => count($transformedProperties),
+        ],
+    ]);
+
+} catch (Exception $e) {
+    error_log('Landlord properties API error: ' . $e->getMessage());
+    error_log('Stack trace: ' . $e->getTraceAsString());
+    json_response(500, ['error' => 'Failed to load properties: ' . $e->getMessage()]);
+}

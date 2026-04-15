@@ -48,6 +48,9 @@ export function initLandlordDashboard(config = {}) {
   // Load recent activities
   loadRecentActivities();
 
+  // Load properties
+  loadProperties();
+
   initLandlordApplications();
 }
 
@@ -697,9 +700,149 @@ function attachPaymentActionListeners() {
     button.addEventListener('click', () => {
       const paymentId = button.dataset.paymentId;
       if (paymentId) {
-        // Navigate to payment record page
         window.location.href = `../payments/record.html?id=${paymentId}`;
       }
     });
   });
+}
+
+async function loadProperties() {
+  const container = document.getElementById('properties-grid');
+  if (!container) return;
+
+  try {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/landlord/properties`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-User-Id': localStorage.getItem('user_id') || '4',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch properties');
+    }
+
+    const result = await response.json();
+
+    if (result.data && result.data.properties) {
+      renderProperties(result.data.properties, container);
+    } else {
+      renderEmptyPropertiesState(container);
+    }
+  } catch (error) {
+    console.error('Failed to load properties:', error);
+    renderErrorPropertiesState(container);
+  }
+}
+
+function renderProperties(properties, container) {
+  if (!properties || properties.length === 0) {
+    renderEmptyPropertiesState(container);
+    return;
+  }
+
+  const html = properties.map(property => createPropertyCard(property)).join('');
+
+  container.innerHTML = html;
+  injectIcons();
+}
+
+function createPropertyCard(property) {
+  const occupancyColor =
+    property.status === 'full' ? 'green' : property.status === 'inactive' ? 'gray' : 'yellow';
+
+  const locationText = property.city
+    ? `${property.city}${property.province ? ', ' + property.province : ''}`
+    : property.address || 'Location not set';
+
+  const formattedRevenue = new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(property.monthly_revenue || 0);
+
+  const icon = property.total_rooms > 0 ? 'building' : 'home';
+
+  return `
+    <div class="landlord-property-card">
+      <div class="landlord-property-image">
+        <span
+          data-icon="${icon}"
+          data-icon-width="48"
+          data-icon-height="48"
+          data-icon-stroke-width="2"
+          style="display: flex; align-items: center; justify-content: center; height: 100%;"
+        ></span>
+      </div>
+      <div class="landlord-property-info">
+        <h3 class="landlord-property-name">${escapeHtml(property.name)}</h3>
+        <p class="landlord-property-location">
+          <span
+            data-icon="target"
+            data-icon-width="16"
+            data-icon-height="16"
+            data-icon-stroke-width="2"
+            style="display: inline-block; vertical-align: middle"
+          ></span>
+          ${escapeHtml(locationText)}
+        </p>
+        <div class="landlord-property-stats">
+          <div class="landlord-property-stat">
+            <span class="landlord-stat-label">Occupancy</span>
+            <span class="landlord-stat-value ${occupancyColor}">${property.occupied_rooms}/${
+    property.total_rooms
+  } rooms</span>
+          </div>
+          <div class="landlord-property-stat">
+            <span class="landlord-stat-label">Revenue</span>
+            <span class="landlord-stat-value">${formattedRevenue}</span>
+          </div>
+        </div>
+        <div class="landlord-property-actions">
+          <a
+            href="listings/edit.html?id=${property.id}"
+            class="landlord-btn landlord-btn-outline landlord-btn-sm"
+          >
+            Edit
+          </a>
+          <a
+            href="boarders/index.html?property=${property.id}"
+            class="landlord-btn landlord-btn-outline landlord-btn-sm"
+          >
+            View Boarders
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEmptyPropertiesState(container) {
+  container.innerHTML = `
+    <div class="landlord-empty-state" style="text-align: center; padding: 3rem; width: 100%;">
+      <span
+        data-icon="home"
+        data-icon-width="48"
+        data-icon-height="48"
+        data-icon-stroke-width="1.5"
+        style="display: block; margin: 0 auto 1rem; color: var(--text-gray); opacity: 0.5;"
+      ></span>
+      <p style="color: var(--text-gray);">No properties yet. Create your first listing to get started.</p>
+      <a href="listings/create.html" class="landlord-btn landlord-btn-primary" style="margin-top: 1rem; display: inline-block;">
+        Create Listing
+      </a>
+    </div>
+  `;
+  injectIcons();
+}
+
+function renderErrorPropertiesState(container) {
+  container.innerHTML = `
+    <div class="landlord-error-state" style="text-align: center; padding: 3rem; width: 100%;">
+      <p style="color: var(--text-gray);">Unable to load properties. Please try again later.</p>
+    </div>
+  `;
 }

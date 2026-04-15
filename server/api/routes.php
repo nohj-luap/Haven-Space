@@ -190,6 +190,9 @@ Router::post('/api/onboarding/welcome', [OnboardingController::class, 'triggerWe
 // ============================================
 // Dashboard stats endpoint (handled directly by file)
 // GET /api/landlord/dashboard/stats -> /server/api/landlord/dashboard-stats.php
+Router::get('/api/landlord/properties', function() {
+    require_once __DIR__ . '/landlord/properties.php';
+});
 
 // ============================================
 // DISPATCH THE REQUEST

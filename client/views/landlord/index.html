@@ -296,115 +296,12 @@
                 ></span>
               </a>
             </div>
-            <div class="landlord-properties-grid">
-              <!-- Property Card 1 -->
-              <div class="landlord-property-card">
-                <div class="landlord-property-image">
-                  <span
-                    data-icon="home"
-                    data-icon-width="48"
-                    data-icon-height="48"
-                    data-icon-stroke-width="2"
-                    style="
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      height: 100%;
-                    "
-                  ></span>
-                </div>
-                <div class="landlord-property-info">
-                  <h3 class="landlord-property-name">Sunrise Dormitory</h3>
-                  <p class="landlord-property-location">
-                    <span
-                      data-icon="target"
-                      data-icon-width="16"
-                      data-icon-height="16"
-                      data-icon-stroke-width="2"
-                      style="display: inline-block; vertical-align: middle"
-                    ></span>
-                    Sampaloc, Manila
-                  </p>
-                  <div class="landlord-property-stats">
-                    <div class="landlord-property-stat">
-                      <span class="landlord-stat-label">Occupancy</span>
-                      <span class="landlord-stat-value green">10/12 rooms</span>
-                    </div>
-                    <div class="landlord-property-stat">
-                      <span class="landlord-stat-label">Revenue</span>
-                      <span class="landlord-stat-value">₱27,500</span>
-                    </div>
-                  </div>
-                  <div class="landlord-property-actions">
-                    <a
-                      href="listings/edit.html"
-                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
-                    >
-                      Edit
-                    </a>
-                    <a
-                      href="boarders/index.html"
-                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
-                    >
-                      View Boarders
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Property Card 2 -->
-              <div class="landlord-property-card">
-                <div class="landlord-property-image">
-                  <span
-                    data-icon="building"
-                    data-icon-width="48"
-                    data-icon-height="48"
-                    data-icon-stroke-width="2"
-                    style="
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      height: 100%;
-                    "
-                  ></span>
-                </div>
-                <div class="landlord-property-info">
-                  <h3 class="landlord-property-name">Green Valley Boarding House</h3>
-                  <p class="landlord-property-location">
-                    <span
-                      data-icon="target"
-                      data-icon-width="16"
-                      data-icon-height="16"
-                      data-icon-stroke-width="2"
-                      style="display: inline-block; vertical-align: middle"
-                    ></span>
-                    Diliman, Quezon City
-                  </p>
-                  <div class="landlord-property-stats">
-                    <div class="landlord-property-stat">
-                      <span class="landlord-stat-label">Occupancy</span>
-                      <span class="landlord-stat-value yellow">6/10 rooms</span>
-                    </div>
-                    <div class="landlord-property-stat">
-                      <span class="landlord-stat-label">Revenue</span>
-                      <span class="landlord-stat-value">₱20,000</span>
-                    </div>
-                  </div>
-                  <div class="landlord-property-actions">
-                    <a
-                      href="listings/edit.html"
-                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
-                    >
-                      Edit
-                    </a>
-                    <a
-                      href="boarders/index.html"
-                      class="landlord-btn landlord-btn-outline landlord-btn-sm"
-                    >
-                      View Boarders
-                    </a>
-                  </div>
-                </div>
+            <div id="properties-grid" class="landlord-properties-grid">
+              <div
+                class="landlord-loading-state"
+                style="text-align: center; padding: 2rem; width: 100%"
+              >
+                <p style="color: var(--text-gray)">Loading properties...</p>
               </div>
             </div>
           </div>
