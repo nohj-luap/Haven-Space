@@ -6,7 +6,11 @@
 import CONFIG from '../../config.js';
 import { getIcon } from '../../shared/icons.js';
 import { getPaymentStatus, formatDaysRemaining } from './boarder-payments.js';
-import { initBoarderAccessControl, showProtectedEmptyState, isFeatureReadonly } from './access-control-init.js';
+import {
+  initBoarderAccessControl,
+  showProtectedEmptyState,
+  isFeatureReadonly,
+} from './access-control-init.js';
 
 /**
  * Get current user ID from localStorage
@@ -22,7 +26,7 @@ function getCurrentUserId() {
       console.error('Error parsing user from localStorage:', e);
     }
   }
-  
+
   // Fallback to user_id
   const userId = localStorage.getItem('user_id');
   return parseInt(userId || '0');
@@ -176,7 +180,7 @@ function renderFinancialOverview(data) {
   const nextPaymentProgressLabel = document.querySelector(
     '.financial-card-gradient-2 .financial-card-progress-label'
   );
-  
+
   if (nextPaymentValue) {
     nextPaymentValue.textContent = `₱${formatCurrency(data.next_payment_amount || 0)}`;
   }
@@ -189,14 +193,14 @@ function renderFinancialOverview(data) {
         : `Due in ${data.days_until_due} day${data.days_until_due !== 1 ? 's' : ''}`;
     nextPaymentTrend.textContent = daysText;
   }
-  
+
   // Update progress bar (calculate percentage of month completed)
   if (nextPaymentProgress && nextPaymentProgressLabel) {
     const today = new Date();
     const dayOfMonth = today.getDate();
     const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     const percentComplete = Math.round((dayOfMonth / daysInMonth) * 100);
-    
+
     nextPaymentProgress.style.width = `${percentComplete}%`;
     nextPaymentProgressLabel.textContent = `${percentComplete}% of month completed`;
   }
@@ -217,7 +221,7 @@ function renderFinancialOverview(data) {
   if (depositValue) {
     depositValue.textContent = `₱${formatCurrency(data.security_deposit || 0)}`;
   }
-  
+
   // Update Quick Pay balance
   const quickPayBalance = document.querySelector('.quick-pay-balance');
   if (quickPayBalance) {
@@ -259,7 +263,7 @@ function renderCurrentBill(data) {
     const utilities = bill.utilities || 0;
     const wifi = bill.wifi || 0;
     const lateFee = bill.late_fee || 0;
-    const total = bill.total || (baseRent + utilities + wifi + lateFee);
+    const total = bill.total || baseRent + utilities + wifi + lateFee;
 
     breakdown.innerHTML = `
       <div class="current-bill-row">
@@ -326,7 +330,7 @@ function renderCurrentBill(data) {
     billCard.setAttribute('data-due-date', bill.due_date);
     billCard.setAttribute('data-paid-date', bill.status === 'paid' ? bill.due_date : '');
   }
-  
+
   // Update auto-pay amount
   const autoPayAmountEl = document.getElementById('autoPayAmount');
   if (autoPayAmountEl) {
@@ -355,13 +359,11 @@ function renderPaymentHistory(payments) {
     .map(payment => {
       const isPaid = payment.status === 'paid';
       const status = getPaymentStatus(payment.due_date, payment.payment_date);
-      
+
       // Determine the title based on available data
-      const monthYear = payment.due_date 
-        ? formatDate(payment.due_date, 'long')
-        : 'Payment';
+      const monthYear = payment.due_date ? formatDate(payment.due_date, 'long') : 'Payment';
       const title = `${monthYear} Rent`;
-      
+
       // Add notes if this is a move-in payment
       const isFirstPayment = payment.notes && payment.notes.includes('deposit');
       const notesHtml = payment.notes
@@ -472,7 +474,7 @@ function renderPaymentMethods(methods) {
     `;
     })
     .join('');
-    
+
   // Update auto-pay default method
   const defaultMethod = methods.find(m => m.is_default);
   if (defaultMethod) {
@@ -490,14 +492,14 @@ export async function initPaymentsPage() {
   try {
     // Check access control first
     const accessResult = await initBoarderAccessControl();
-    
+
     if (!accessResult.hasAccess) {
       // Show empty state for all sections
       const financialCards = document.querySelector('.financial-overview-grid');
       const currentBillCard = document.querySelector('.payments-current-bill-card');
       const paymentTimeline = document.querySelector('.payment-timeline');
       const paymentMethodsList = document.querySelector('.payment-methods-list');
-      
+
       if (financialCards) {
         showProtectedEmptyState(financialCards, 'payments');
       }
@@ -510,19 +512,19 @@ export async function initPaymentsPage() {
       if (paymentMethodsList) {
         showProtectedEmptyState(paymentMethodsList, 'payments');
       }
-      
+
       return; // Stop here, don't load data
     }
-    
+
     // Show loading state
     console.warn('Loading payment data from API...');
-    
+
     // Add loading indicators to main sections
     const financialCards = document.querySelector('.financial-overview-grid');
     const currentBillCard = document.querySelector('.payments-current-bill-card');
     const paymentTimeline = document.querySelector('.payment-timeline');
     const paymentMethodsList = document.querySelector('.payment-methods-list');
-    
+
     if (financialCards) {
       financialCards.style.opacity = '0.5';
     }
@@ -530,10 +532,12 @@ export async function initPaymentsPage() {
       currentBillCard.style.opacity = '0.5';
     }
     if (paymentTimeline) {
-      paymentTimeline.innerHTML = '<p style="text-align: center; padding: 20px;">Loading payment history...</p>';
+      paymentTimeline.innerHTML =
+        '<p style="text-align: center; padding: 20px;">Loading payment history...</p>';
     }
     if (paymentMethodsList) {
-      paymentMethodsList.innerHTML = '<p style="text-align: center; padding: 20px;">Loading payment methods...</p>';
+      paymentMethodsList.innerHTML =
+        '<p style="text-align: center; padding: 20px;">Loading payment methods...</p>';
     }
 
     // Fetch all data in parallel
@@ -552,13 +556,13 @@ export async function initPaymentsPage() {
     } else {
       console.error('Failed to load payment overview');
     }
-    
+
     if (history) {
       renderPaymentHistory(history);
     } else {
       console.error('Failed to load payment history');
     }
-    
+
     if (methods) {
       renderPaymentMethods(methods);
     } else {
@@ -576,13 +580,14 @@ export async function initPaymentsPage() {
     console.warn('Payment data loaded and rendered successfully');
   } catch (error) {
     console.error('Error initializing payments page:', error);
-    
+
     // Show error message to user
     const errorMessage = document.createElement('div');
-    errorMessage.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #ef4444; color: white; padding: 16px 24px; border-radius: 8px; z-index: 9999;';
+    errorMessage.style.cssText =
+      'position: fixed; top: 20px; right: 20px; background: #ef4444; color: white; padding: 16px 24px; border-radius: 8px; z-index: 9999;';
     errorMessage.textContent = 'Failed to load payment data. Please refresh the page.';
     document.body.appendChild(errorMessage);
-    
+
     setTimeout(() => {
       errorMessage.remove();
     }, 5000);

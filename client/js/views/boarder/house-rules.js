@@ -12,15 +12,16 @@ import { initBoarderAccessControl, showProtectedEmptyState } from './access-cont
 export async function initHouseRulesPage() {
   // Check access control first
   const accessResult = await initBoarderAccessControl();
-  
+
   if (!accessResult.hasAccess) {
-    const houseRulesContainer = document.querySelector('.house-rules-container') || document.querySelector('main');
+    const houseRulesContainer =
+      document.querySelector('.house-rules-container') || document.querySelector('main');
     if (houseRulesContainer) {
       showProtectedEmptyState(houseRulesContainer, 'houseRules');
     }
     return;
   }
-  
+
   // Acknowledge button handler
   const acknowledgeBtn = document.getElementById('acknowledge-rules-btn');
   if (acknowledgeBtn) {

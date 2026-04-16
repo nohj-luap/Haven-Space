@@ -43,11 +43,14 @@ export async function checkAcceptanceStatus() {
       accessState.isLoading = false;
 
       // Store in localStorage for quick access
-      localStorage.setItem('boarder_acceptance_status', JSON.stringify({
-        hasAccepted: accessState.hasAcceptedApplication,
-        propertyIds: accessState.acceptedProperties,
-        timestamp: accessState.lastChecked,
-      }));
+      localStorage.setItem(
+        'boarder_acceptance_status',
+        JSON.stringify({
+          hasAccepted: accessState.hasAcceptedApplication,
+          propertyIds: accessState.acceptedProperties,
+          timestamp: accessState.lastChecked,
+        })
+      );
 
       return accessState.hasAcceptedApplication;
     }
@@ -73,7 +76,8 @@ export async function getAcceptanceStatus(forceRefresh = false) {
     try {
       const parsed = JSON.parse(cached);
       const age = Date.now() - parsed.timestamp;
-      if (age < 5 * 60 * 1000) { // 5 minutes
+      if (age < 5 * 60 * 1000) {
+        // 5 minutes
         accessState.hasAcceptedApplication = parsed.hasAccepted;
         accessState.acceptedProperties = parsed.propertyIds || [];
         accessState.isLoading = false;
@@ -194,7 +198,10 @@ function showReadonlyBanner() {
   `;
 
   // Insert at top of main content
-  const mainContent = document.querySelector('main') || document.querySelector('.boarder-main-content') || document.body;
+  const mainContent =
+    document.querySelector('main') ||
+    document.querySelector('.boarder-main-content') ||
+    document.body;
   mainContent.insertBefore(banner, mainContent.firstChild);
 }
 

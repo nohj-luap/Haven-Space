@@ -15,15 +15,17 @@ let allAnnouncements = [];
 export async function initAnnouncements() {
   // Check access control first
   const accessResult = await initBoarderAccessControl();
-  
+
   if (!accessResult.hasAccess) {
-    const announcementsContainer = document.querySelector('.announcements-list') || document.querySelector('.boarder-announcements-list');
+    const announcementsContainer =
+      document.querySelector('.announcements-list') ||
+      document.querySelector('.boarder-announcements-list');
     if (announcementsContainer) {
       showProtectedEmptyState(announcementsContainer, 'announcements');
     }
     return;
   }
-  
+
   initFilterTabs();
   loadAnnouncements();
 }

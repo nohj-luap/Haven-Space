@@ -5,7 +5,7 @@ import { initBoarderAccessControl, showProtectedEmptyState } from './access-cont
 document.addEventListener('DOMContentLoaded', async () => {
   // Check access control first
   const accessResult = await initBoarderAccessControl();
-  
+
   if (!accessResult.hasAccess) {
     const documentsContainer = document.getElementById('documents-container');
     if (documentsContainer) {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     return;
   }
-  
+
   loadDocuments();
 });
 
