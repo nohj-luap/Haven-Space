@@ -6,7 +6,7 @@
 import CONFIG from '../../config.js';
 import { getIcon } from '../../shared/icons.js';
 import { initSidebar } from '../../components/sidebar.js';
-import { initNavbar } from '../../components/navbar.js';
+import { initNavbar, updateNavbarNotifications } from '../../components/navbar.js';
 
 // Amenity display names
 const amenityLabels = {
@@ -182,8 +182,8 @@ export async function initMyProperties() {
       avatarUrl: user.avatar_url || '',
       email: user.email || '',
     },
-    notificationCount: 5,
   });
+  setTimeout(() => updateNavbarNotifications(), 100);
 
   // Fetch verification status
   isVerified = await fetchVerificationStatus();

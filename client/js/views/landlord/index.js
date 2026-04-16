@@ -6,7 +6,7 @@
 
 import CONFIG from '../../config.js';
 import { initSidebar } from '../../components/sidebar.js';
-import { initNavbar } from '../../components/navbar.js';
+import { initNavbar, updateNavbarNotifications } from '../../components/navbar.js';
 import { initLandlordDashboard } from './landlord.js';
 import { initMessages } from './messages.js';
 import { initLandlordSettings } from './settings.js';
@@ -83,8 +83,11 @@ export async function initLandlordDashboardEntry() {
         avatarUrl: user.avatar_url || '',
         email: user.email || '',
       },
-      notificationCount: 3,
     });
+
+    // Fetch real notifications from API after navbar is initialized
+    // Small delay to allow the navbar template to finish rendering
+    setTimeout(() => updateNavbarNotifications(), 100);
   }
 
   // Initialize landlord dashboard

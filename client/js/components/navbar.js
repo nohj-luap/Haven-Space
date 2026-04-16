@@ -10,8 +10,6 @@ import { getIcon } from '../shared/icons.js';
  * @param {Object} options - Configuration options
  * @param {string} options.containerId - ID of container element (default: 'navbar-container')
  * @param {Object} options.user - User info object with name, initials, avatarUrl, email
- * @param {number} options.notificationCount - Number of unread notifications
- * @param {Array} options.notifications - Array of notification objects
  */
 export function initNavbar(options = {}) {
   const {
@@ -22,8 +20,6 @@ export function initNavbar(options = {}) {
       avatarUrl: '',
       email: 'juan@example.com',
     },
-    notificationCount = 3,
-    notifications = getDefaultNotifications(),
   } = options;
 
   const container = document.getElementById(containerId);
@@ -46,12 +42,6 @@ export function initNavbar(options = {}) {
       // Update user info
       updateUserInfo(user, basePath);
 
-      // Update notification count
-      updateNotificationCount(notificationCount);
-
-      // Render notification list
-      renderNotifications(notifications);
-
       // Setup event handlers
       setupThemeToggle();
       setupNotificationHandler();
@@ -64,42 +54,6 @@ export function initNavbar(options = {}) {
     .catch(() => {
       // Failed to load navbar template
     });
-}
-
-/**
- * Get default notifications for demo
- * @returns {Array} Array of notification objects
- */
-function getDefaultNotifications() {
-  return [
-    {
-      id: 1,
-      type: 'success',
-      icon: 'checkCircle',
-      title: 'Payment Received',
-      description: 'Your payment of ₱5,000 has been successfully processed.',
-      time: '2 minutes ago',
-      unread: true,
-    },
-    {
-      id: 2,
-      type: 'info',
-      icon: 'informationCircle',
-      title: 'New Message',
-      description: 'You have a new message from your landlord regarding Room 204.',
-      time: '1 hour ago',
-      unread: true,
-    },
-    {
-      id: 3,
-      type: 'warning',
-      icon: 'exclamationTriangle',
-      title: 'Maintenance Scheduled',
-      description: 'Water system maintenance scheduled for tomorrow, 9:00 AM - 12:00 PM.',
-      time: '3 hours ago',
-      unread: true,
-    },
-  ];
 }
 
 /**
@@ -296,10 +250,19 @@ function renderNotifications(notifications) {
         })
       );
 
-      // Mark as read
+      // Optimistically mark as read in UI
       if (item.classList.contains('unread')) {
         item.classList.remove('unread');
         updateUnreadCount(-1);
+
+        // Call API to persist
+        import('../shared/notifications.js')
+          .then(({ markNotificationAsRead }) => markNotificationAsRead(notificationId))
+          .catch(() => {
+            // Revert UI on failure
+            item.classList.add('unread');
+            updateUnreadCount(1);
+          });
       }
     });
   });
@@ -315,11 +278,22 @@ function markAllAsRead() {
   const unreadItems = list.querySelectorAll('.navbar-notification-item.unread');
   const count = unreadItems.length;
 
+  if (count === 0) return;
+
+  // Optimistically update UI
   unreadItems.forEach(item => {
     item.classList.remove('unread');
   });
-
   updateUnreadCount(-count);
+
+  // Call API
+  import('../shared/notifications.js')
+    .then(({ markAllNotificationsAsRead }) => markAllNotificationsAsRead())
+    .catch(() => {
+      // Revert UI on failure
+      unreadItems.forEach(item => item.classList.add('unread'));
+      updateUnreadCount(count);
+    });
 
   window.dispatchEvent(new CustomEvent('navbar:notification:markAllRead'));
 }

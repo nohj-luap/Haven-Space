@@ -82,10 +82,10 @@
                   ></span>
                 </div>
               </div>
-              <div class="report-stat-value">₱142,500</div>
-              <div class="report-stat-change positive">
-                <span class="change-arrow">↑</span>
-                <span class="change-value">12.5%</span>
+              <div class="report-stat-value" id="totalRevenueValue">—</div>
+              <div class="report-stat-change positive" id="totalRevenueChange">
+                <span class="change-arrow" id="totalRevenueArrow">↑</span>
+                <span class="change-value" id="totalRevenueChangeValue">—</span>
                 <span class="change-label">vs previous period</span>
               </div>
             </div>
@@ -102,10 +102,10 @@
                   ></span>
                 </div>
               </div>
-              <div class="report-stat-value">87.3%</div>
-              <div class="report-stat-change positive">
-                <span class="change-arrow">↑</span>
-                <span class="change-value">3.2%</span>
+              <div class="report-stat-value" id="avgOccupancyValue">—</div>
+              <div class="report-stat-change positive" id="avgOccupancyChange">
+                <span class="change-arrow" id="avgOccupancyArrow">↑</span>
+                <span class="change-value" id="avgOccupancyChangeValue">—</span>
                 <span class="change-label">vs previous period</span>
               </div>
             </div>
@@ -122,11 +122,11 @@
                   ></span>
                 </div>
               </div>
-              <div class="report-stat-value">34</div>
-              <div class="report-stat-change positive">
-                <span class="change-arrow">↑</span>
-                <span class="change-value">6 new</span>
-                <span class="change-label">vs previous period</span>
+              <div class="report-stat-value" id="totalBoardersValue">—</div>
+              <div class="report-stat-change positive" id="totalBoardersChange">
+                <span class="change-arrow" id="totalBoardersArrow">↑</span>
+                <span class="change-value" id="totalBoardersChangeValue">—</span>
+                <span class="change-label">this period</span>
               </div>
             </div>
 
@@ -142,10 +142,10 @@
                   ></span>
                 </div>
               </div>
-              <div class="report-stat-value">₱12,750</div>
-              <div class="report-stat-change negative">
-                <span class="change-arrow">↓</span>
-                <span class="change-value">8.3%</span>
+              <div class="report-stat-value" id="outstandingPaymentsValue">—</div>
+              <div class="report-stat-change negative" id="outstandingPaymentsChange">
+                <span class="change-arrow" id="outstandingPaymentsArrow">↓</span>
+                <span class="change-value" id="outstandingPaymentsChangeValue">—</span>
                 <span class="change-label">vs previous period</span>
               </div>
             </div>
@@ -294,14 +294,8 @@
               </table>
             </div>
             <div class="report-table-footer">
-              <span class="table-info">Showing 6 of 34 entries</span>
-              <div class="table-pagination">
-                <button class="pagination-btn" disabled>Previous</button>
-                <button class="pagination-btn active">1</button>
-                <button class="pagination-btn">2</button>
-                <button class="pagination-btn">3</button>
-                <button class="pagination-btn">Next</button>
-              </div>
+              <span class="table-info">Loading...</span>
+              <div class="table-pagination"></div>
             </div>
           </div>
         </div>
