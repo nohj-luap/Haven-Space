@@ -9,10 +9,8 @@ CREATE TABLE IF NOT EXISTS property_photos (
     display_order INT DEFAULT 0 COMMENT 'Order in which photos should be displayed',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_property_id (property_id),
+    INDEX idx_is_cover (property_id, is_cover),
+    INDEX idx_display_order (property_id, display_order),
     FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
 );
-
--- Create indexes for faster lookups
-CREATE INDEX idx_property_id ON property_photos(property_id);
-CREATE INDEX idx_is_cover ON property_photos(property_id, is_cover);
-CREATE INDEX idx_display_order ON property_photos(property_id, display_order);

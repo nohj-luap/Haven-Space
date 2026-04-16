@@ -13,8 +13,6 @@ CREATE TABLE IF NOT EXISTS property_details (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY unique_property (property_id),
+    INDEX idx_property_id (property_id),
     FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
 );
-
--- Create index for faster lookups
-CREATE INDEX idx_property_id ON property_details(property_id);
