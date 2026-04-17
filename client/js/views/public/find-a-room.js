@@ -5,6 +5,7 @@
 
 import { getIcon } from '../../shared/icons.js';
 import { loadState, getState } from '../../shared/state.js';
+import CONFIG from '../../config.js';
 
 // State management for enhanced features
 const enhancedState = {
@@ -763,27 +764,15 @@ export function initFindARoomEnhanced() {
 /**
  * Setup all enhanced feature event listeners
  */
-function setupEnhancedFeatures() {
+async function setupEnhancedFeatures() {
   // Load auth state
   const authState = loadState();
 
   // Render UI based on auth state
   renderAuthState(authState);
 
-  // Load applications from localStorage or use sample data
-  const storedApplications = localStorage.getItem('applications');
-  if (storedApplications) {
-    try {
-      enhancedState.applications = JSON.parse(storedApplications);
-    } catch (error) {
-      console.error('Failed to parse applications from localStorage:', error);
-      enhancedState.applications = sampleApplications;
-    }
-  } else {
-    // Initialize with sample data and persist to localStorage
-    enhancedState.applications = sampleApplications;
-    localStorage.setItem('applications', JSON.stringify(sampleApplications));
-  }
+  // Load applications from API (real data)
+  await loadApplicationsFromAPI();
 
   // Initialize floating header
   initFloatingHeader();
@@ -1019,6 +1008,44 @@ function hideHeader() {
    Status Dropdown
    ========================================================================== */
 
+/**
+ * Load real applications from the API
+ */
+async function loadApplicationsFromAPI() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/boarder/applications`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch applications');
+
+    const result = await response.json();
+    const raw = result.data?.applications || result.data || [];
+
+    // Normalise API shape → internal shape
+    enhancedState.applications = raw.map(app => ({
+      id: app.id,
+      propertyId: app.property_id,
+      title: app.property_title || app.room_title || 'Property',
+      address: app.property_address || app.address || '',
+      price: app.rent || app.monthly_rent || app.price || 0,
+      image: app.property_image || app.image || '../../../assets/images/placeholder-room.svg',
+      status: app.status, // 'pending' | 'accepted' | 'rejected'
+      appliedDate: app.created_at,
+      roomTitle: app.room_title || '',
+      landlordName: app.landlord_name || '',
+    }));
+  } catch (err) {
+    console.warn('Could not load applications from API, using empty list:', err.message);
+    enhancedState.applications = [];
+  }
+
+  updateStatusBadge();
+}
+
 function initStatusDropdown() {
   const dropdownBtn = document.getElementById('status-dropdown-btn');
   const dropdownMenu = document.getElementById('status-dropdown-menu');
@@ -1069,53 +1096,88 @@ function renderApplications() {
 
   if (filtered.length === 0) {
     list.innerHTML = `
-      <div class="find-room-empty-state">
-        <p>No applications found</p>
+      <div class="find-room-empty-state" style="padding:2rem;text-align:center;color:var(--text-gray);">
+        <p>No ${
+          enhancedState.currentStatusFilter === 'all' ? '' : enhancedState.currentStatusFilter + ' '
+        }applications found.</p>
       </div>
     `;
     return;
   }
 
+  const statusMeta = {
+    pending: { label: 'Pending', color: '#d97706', bg: 'rgba(251,191,36,0.12)' },
+    accepted: { label: 'Accepted', color: '#059669', bg: 'rgba(16,185,129,0.12)' },
+    rejected: { label: 'Rejected', color: '#dc2626', bg: 'rgba(239,68,68,0.12)' },
+  };
+
   list.innerHTML = filtered
-    .map(
-      app => `
-      <div class="find-room-application-item" data-application-id="${app.id}">
-        <img src="${app.image}" alt="${app.title}" class="find-room-application-image" />
-        <div class="find-room-application-info">
-          <h4 class="find-room-application-title">${app.title}</h4>
-          <p class="find-room-application-address">${app.address}</p>
-          <div class="find-room-application-price">₱${app.price.toLocaleString()}/month</div>
+    .map(app => {
+      const meta = statusMeta[app.status] || statusMeta.pending;
+      const date = app.appliedDate
+        ? new Date(app.appliedDate).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : '';
+      const action =
+        app.status === 'accepted'
+          ? `<button class="find-room-app-action-btn" data-id="${app.id}" style="margin-top:0.5rem;padding:0.4rem 0.9rem;background:var(--primary-green);color:#fff;border:none;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:var(--font-main);">Confirm Booking</button>`
+          : '';
+
+      return `
+      <div class="find-room-application-item" data-application-id="${app.id}" data-status="${
+        app.status
+      }"
+           style="display:flex;gap:0.75rem;padding:0.875rem;border:1px solid var(--border-color);border-radius:12px;margin-bottom:0.625rem;cursor:pointer;transition:box-shadow 0.2s;">
+        <img src="${app.image}" alt="${app.title}"
+             style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;"
+             onerror="this.src='../../../assets/images/placeholder-room.svg'" />
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;">
+            <div style="min-width:0;">
+              <p style="font-size:0.938rem;font-weight:600;color:var(--text-dark);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${
+                app.title
+              }</p>
+              ${
+                app.roomTitle
+                  ? `<p style="font-size:0.8rem;color:var(--text-gray);margin:0.125rem 0 0;">${app.roomTitle}</p>`
+                  : ''
+              }
+            </div>
+            <span style="flex-shrink:0;padding:0.25rem 0.625rem;border-radius:100px;font-size:0.75rem;font-weight:700;background:${
+              meta.bg
+            };color:${meta.color};">${meta.label}</span>
+          </div>
+          ${
+            date
+              ? `<p style="font-size:0.8rem;color:var(--text-gray);margin:0.375rem 0 0;">Applied ${date}</p>`
+              : ''
+          }
+          ${action}
         </div>
-        <span class="find-room-application-status find-room-status-${app.status}">
-          ${app.status}
-        </span>
       </div>
-    `
-    )
+    `;
+    })
     .join('');
 
-  // Add click handlers
+  // Confirm Booking buttons
+  list.querySelectorAll('.find-room-app-action-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const appId = btn.dataset.id;
+      window.location.href = `../confirm-booking/index.html?applicationId=${appId}`;
+    });
+  });
+
+  // Click on item → confirm-booking for accepted, nothing for others
   list.querySelectorAll('.find-room-application-item').forEach(item => {
     item.addEventListener('click', () => {
-      const appId = parseInt(item.dataset.applicationId);
-      const application = enhancedState.applications.find(a => a.id === appId);
-      if (!application) return;
-
-      // Check if boarder already accepted a landlord
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if (user.boarderStatus === 'accepted') {
-        // Already confirmed a booking - redirect to boarder dashboard
-        window.location.href = '../../views/boarder/index.html';
-        return;
-      }
-
-      // Navigate based on application status
-      if (application.status === 'accepted') {
-        // Accepted application - go to confirm-booking page
-        window.location.href = `../../views/boarder/confirm-booking/index.html?applicationId=${application.id}`;
-      } else if (application.status === 'pending') {
-        // Pending application - still show details but indicate waiting status
-        window.location.href = `../../views/boarder/confirm-booking/index.html?applicationId=${application.id}`;
+      const status = item.dataset.status;
+      const appId = item.dataset.applicationId;
+      if (status === 'accepted') {
+        window.location.href = `../confirm-booking/index.html?applicationId=${appId}`;
       }
     });
   });
