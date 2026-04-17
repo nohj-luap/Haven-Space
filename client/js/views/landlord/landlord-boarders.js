@@ -11,13 +11,45 @@ export function initLandlordBoarders() {
   const propertyId = urlParams.get('propertyId');
 
   if (!propertyId) {
-    window.location.href = '../listings/index.html';
+    // If no propertyId provided, fetch the first property and redirect
+    fetchFirstProperty().then(firstProperty => {
+      if (firstProperty && firstProperty.id) {
+        window.location.href = `index.html?propertyId=${firstProperty.id}`;
+      } else {
+        // No properties found, redirect to listings page
+        window.location.href = '../listings/index.html';
+      }
+    });
     return;
   }
 
   loadPropertyData(propertyId);
   loadBoarders(propertyId);
   setupEventListeners();
+}
+
+async function fetchFirstProperty() {
+  try {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/landlord/properties.php`, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    // Check if there are properties in the response
+    if (result.data && result.data.properties && result.data.properties.length > 0) {
+      return result.data.properties[0];
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch first property:', error);
+    return null;
+  }
 }
 
 async function fetchPropertyFromApi(propertyId) {
@@ -34,6 +66,11 @@ async function fetchPropertyFromApi(propertyId) {
     }
 
     const result = await response.json();
+
+    // Check if result.data has an id property (direct property object)
+    if (result.data && result.data.id) {
+      return result.data;
+    }
 
     if (result.data && result.data.property) {
       return result.data.property;
