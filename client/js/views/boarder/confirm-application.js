@@ -382,12 +382,19 @@ async function handleSubmit(e) {
   `;
 
   try {
+    // Get token for authentication
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     // Submit application to API using correct endpoint
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/boarder/applications`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       credentials: 'include',
       body: JSON.stringify(applicationData),
     });

@@ -610,9 +610,52 @@ async function submitApplication(room, roomType, modalOverlay) {
   submitBtn.textContent = 'Submitting...';
 
   try {
-    // TODO: Integrate with backend API
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Get form data
+    const messageInput = modalOverlay.querySelector('#application-message');
+    const moveInDateInput = modalOverlay.querySelector('#move-in-date');
+    const termsCheckbox = modalOverlay.querySelector('#terms-checkbox');
+
+    // Validate form
+    if (!termsCheckbox.checked) {
+      throw new Error('Please accept the terms and conditions');
+    }
+
+    if (!moveInDateInput.value) {
+      throw new Error('Please select a move-in date');
+    }
+
+    // Prepare application data
+    const applicationData = {
+      room_id: room.id,
+      landlord_id: room.landlord_id,
+      property_id: room.property_id,
+      message: `Move-in Date: ${moveInDateInput.value}\n\n${
+        messageInput.value || 'No additional message provided.'
+      }`,
+    };
+
+    // Get auth token
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!user.token) {
+      throw new Error('Authentication required. Please log in.');
+    }
+
+    // Submit to backend API
+    const response = await fetch(`${CONFIG.API_BASE_URL}/api/boarder/applications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+      credentials: 'include',
+      body: JSON.stringify(applicationData),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to submit application');
+    }
 
     // Update boarder status
     updateBoarderStatus('applied_pending');
@@ -626,7 +669,7 @@ async function submitApplication(room, roomType, modalOverlay) {
       <span data-icon="paperAirplane" data-icon-width="18" data-icon-height="18"></span>
       Submit Application
     `;
-    alert('Failed to submit application. Please try again.');
+    alert(error.message || 'Failed to submit application. Please try again.');
   }
 }
 

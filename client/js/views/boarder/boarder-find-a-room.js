@@ -72,7 +72,7 @@ async function fetchProperties() {
 
     const result = await response.json();
 
-    if (result.success && result.data && result.data.properties) {
+    if (result.data && result.data.properties) {
       // Transform API data to match expected format
       state.properties = result.data.properties.map(prop => ({
         id: prop.id,
