@@ -214,6 +214,49 @@ try {
         }
     }
 
+    // Create rooms for the property
+    $roomsCount = intval($input['propertyRooms']);
+    $roomCapacity = intval($input['propertyCapacity']);
+    $roomPrice = floatval($input['propertyPrice']);
+    
+    // Determine room type based on capacity
+    $roomType = $roomCapacity === 1 ? 'single' : 'shared';
+    $roomTypeDisplay = $roomCapacity === 1 ? 'Single Room' : "Shared Room ({$roomCapacity} persons)";
+    
+    if ($roomsCount > 0) {
+        $roomStmt = $pdo->prepare("
+            INSERT INTO rooms (
+                property_id,
+                landlord_id,
+                title,
+                price,
+                status,
+                room_number,
+                room_type,
+                capacity,
+                created_at,
+                updated_at
+            ) VALUES (
+                ?, ?, ?, ?, 'available', ?, ?, ?, NOW(), NOW()
+            )
+        ");
+
+        for ($i = 1; $i <= $roomsCount; $i++) {
+            $roomNumber = "Room {$i}";
+            $roomTitle = "{$roomTypeDisplay} - {$roomNumber}";
+            
+            $roomStmt->execute([
+                $propertyId,
+                $landlordId,
+                $roomTitle,
+                $roomPrice,
+                $roomNumber,
+                $roomType,
+                $roomCapacity
+            ]);
+        }
+    }
+
     // Commit transaction
     $pdo->commit();
 

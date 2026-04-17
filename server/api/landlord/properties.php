@@ -119,13 +119,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     pd.province,
                     pd.property_type,
                     pd.deposit,
-                    COUNT(DISTINCT r.id) as total_rooms,
+                    pd.capacity,
+                    pd.min_stay,
+                    pd.availability,
+                    pd.total_rooms as property_total_rooms,
+                    COUNT(DISTINCT r.id) as rooms_count,
                     COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN 1 ELSE 0 END), 0) as occupied_rooms
                 FROM properties p
                 LEFT JOIN property_details pd ON pd.property_id = p.id
                 LEFT JOIN rooms r ON p.id = r.property_id
                 WHERE p.id = ? AND p.landlord_id = ? AND p.deleted_at IS NULL
-                GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, pd.city, pd.province, pd.property_type, pd.deposit
+                GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, pd.city, pd.province, pd.property_type, pd.deposit, pd.capacity, pd.min_stay, pd.availability, pd.total_rooms
             ");
             $stmt->execute([$propertyId, $landlordId]);
             $property = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -175,9 +179,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'province' => $property['province'] ?? '',
                 'price' => floatval($property['price']),
                 'deposit' => $property['deposit'] ? floatval($property['deposit']) : 0,
+                'capacity' => $property['capacity'] ?? '',
+                'min_stay' => $property['min_stay'] ?? '',
+                'availability' => $property['availability'] ?? 'available-now',
                 'status' => $displayStatus,
-                'total_rooms' => intval($property['total_rooms']),
-                'rooms' => intval($property['total_rooms']),
+                'total_rooms' => $property['property_total_rooms'] ? intval($property['property_total_rooms']) : intval($property['rooms_count']),
+                'rooms' => $property['property_total_rooms'] ? intval($property['property_total_rooms']) : intval($property['rooms_count']),
                 'occupied_rooms' => intval($property['occupied_rooms']),
                 'created_at' => $property['created_at'],
                 'amenities' => $amenities,
@@ -199,18 +206,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     p.status,
                     p.listing_moderation_status,
                     p.created_at,
-                    COUNT(DISTINCT r.id) as total_rooms,
+                    pd.total_rooms as property_total_rooms,
+                    COUNT(DISTINCT r.id) as rooms_count,
                     COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN 1 ELSE 0 END), 0) as occupied_rooms,
                     COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN r.price ELSE 0 END), 0) as monthly_revenue,
                     lp.property_type,
                     pl.city,
                     pl.province
                 FROM properties p
+                LEFT JOIN property_details pd ON pd.property_id = p.id
                 LEFT JOIN rooms r ON p.id = r.property_id
                 LEFT JOIN landlord_profiles lp ON lp.user_id = p.landlord_id
                 LEFT JOIN property_locations pl ON pl.landlord_id = lp.id AND pl.is_primary = TRUE
                 WHERE p.landlord_id = ? AND p.deleted_at IS NULL
-                GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, lp.property_type, pl.city, pl.province
+                GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, pd.total_rooms, lp.property_type, pl.city, pl.province
                 ORDER BY p.created_at DESC
             ");
             $stmt->execute([$landlordId]);
@@ -238,7 +247,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // Transform data for frontend
             $transformedProperties = array_map(function($property) use ($amenitiesMap) {
-                $totalRooms = intval($property['total_rooms']);
+                // Use property_total_rooms from property_details if available, otherwise fall back to rooms_count
+                $totalRooms = $property['property_total_rooms'] ? intval($property['property_total_rooms']) : intval($property['rooms_count']);
                 $occupiedRooms = intval($property['occupied_rooms']);
                 $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0;
 
