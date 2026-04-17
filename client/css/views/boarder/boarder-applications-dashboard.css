@@ -343,11 +343,21 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: conic-gradient(var(--primary-green) 0deg 270deg, var(--border-color) 270deg 360deg);
+  background: conic-gradient(
+    var(--primary-green) 0deg,
+    var(--primary-green) calc(var(--progress, 0) * 3.6deg),
+    var(--border-color) calc(var(--progress, 0) * 3.6deg),
+    var(--border-color) 360deg
+  );
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  transition: background 0.3s ease;
+}
+
+.progress-circle[data-progress='0'] {
+  background: conic-gradient(var(--border-color) 0deg 360deg);
 }
 
 .progress-circle::before {
@@ -495,6 +505,221 @@
 
 .boarder-toggle input:checked + .boarder-toggle-slider:before {
   transform: translateX(20px);
+}
+
+/* Loading States */
+.boarder-stat-value {
+  transition: all 0.3s ease;
+}
+
+.boarder-stat-value:empty::after,
+.boarder-stat-value[data-loading='true']::after {
+  content: '--';
+  color: var(--text-gray);
+  opacity: 0.6;
+}
+
+.boarder-loading-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-gray);
+  font-size: 0.9rem;
+}
+
+.boarder-loading-state::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--primary-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-container {
+  background: var(--white);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-gray);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--border-color);
+}
+
+.modal-body {
+  padding: 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-gray);
+}
+
+.modal-footer #application-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Application Details in Modal */
+.application-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.application-detail-section {
+  background: var(--bg-gray);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.application-detail-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 0.75rem 0;
+}
+
+.application-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.application-detail-item:last-child {
+  border-bottom: none;
+}
+
+.application-detail-item .label {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+.application-detail-item .value {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  text-align: right;
+}
+
+.application-message {
+  background: var(--bg-green);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.application-message h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 0.5rem 0;
+}
+
+.application-message p {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Application Status Messages */
+.application-accepted-message,
+.application-rejected-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.application-accepted-message {
+  background: var(--bg-green);
+  color: var(--dark-green);
+}
+
+.application-accepted-message svg {
+  color: var(--primary-green);
+}
+
+.application-rejected-message {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.application-rejected-message svg {
+  color: #dc2626;
 }
 
 /* Responsive Design */

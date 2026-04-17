@@ -23,10 +23,14 @@ class ApplicationRepository
      */
     public function findByBoarder(int $boarderId): array
     {
-        $sql = 'SELECT a.*, r.title as room_title, r.price as room_price,
+        $sql = 'SELECT a.*, 
+                       r.title as room_title, r.price as room_price,
+                       p.title as property_title, p.address as property_address,
+                       p.id as property_id,
                        u.first_name, u.last_name, u.email as landlord_email
                 FROM applications a
                 JOIN rooms r ON a.room_id = r.id
+                JOIN properties p ON r.property_id = p.id
                 JOIN users u ON a.landlord_id = u.id
                 WHERE a.boarder_id = ? AND a.deleted_at IS NULL
                 ORDER BY a.created_at DESC';
@@ -41,10 +45,14 @@ class ApplicationRepository
      */
     public function findByLandlord(int $landlordId): array
     {
-        $sql = 'SELECT a.*, r.title as room_title, r.price as room_price,
+        $sql = 'SELECT a.*, 
+                       r.title as room_title, r.price as room_price,
+                       p.title as property_title, p.address as property_address,
+                       p.id as property_id,
                        u.first_name, u.last_name, u.email as boarder_email
                 FROM applications a
                 JOIN rooms r ON a.room_id = r.id
+                JOIN properties p ON r.property_id = p.id
                 JOIN users u ON a.boarder_id = u.id
                 WHERE a.landlord_id = ? AND a.deleted_at IS NULL
                 ORDER BY a.created_at DESC';
@@ -59,12 +67,18 @@ class ApplicationRepository
      */
     public function findById(int $id): ?array
     {
-        $sql = 'SELECT a.*, r.title as room_title, r.price as room_price,
+        $sql = 'SELECT a.*, 
+                       r.title as room_title, r.price as room_price,
+                       p.title as property_title, p.address as property_address,
+                       p.description as property_description, p.latitude, p.longitude,
                        r.property_id,
                        ub.first_name as boarder_first_name, ub.last_name as boarder_last_name,
-                       ul.first_name as landlord_first_name, ul.last_name as landlord_last_name
+                       ub.email as boarder_email, ub.avatar_url as boarder_avatar,
+                       ul.first_name as landlord_first_name, ul.last_name as landlord_last_name,
+                       ul.email as landlord_email, ul.avatar_url as landlord_avatar
                 FROM applications a
                 JOIN rooms r ON a.room_id = r.id
+                JOIN properties p ON r.property_id = p.id
                 JOIN users ub ON a.boarder_id = ub.id
                 JOIN users ul ON a.landlord_id = ul.id
                 WHERE a.id = ? AND a.deleted_at IS NULL';
