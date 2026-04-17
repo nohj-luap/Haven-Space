@@ -56,63 +56,75 @@
 .listings-stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
 .listings-stat-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
-  background: var(--white);
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.listings-stat-card .stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .listings-stat-card .stat-icon {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+}
+
+.listings-stat-card .stat-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .listings-stat-card .stat-icon.green {
-  background-color: var(--bg-green);
-  color: var(--primary-green);
+  background-color: rgba(34, 197, 94, 0.1);
+  color: var(--dashboard-success);
 }
 
 .listings-stat-card .stat-icon.blue {
-  background-color: #dbeafe;
-  color: #2563eb;
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--dashboard-info);
 }
 
 .listings-stat-card .stat-icon.purple {
-  background-color: #ede9fe;
-  color: #7c3aed;
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--dashboard-purple);
 }
 
 .listings-stat-card .stat-icon.orange {
-  background-color: #fef3c7;
-  color: #d97706;
-}
-
-.listings-stat-card .stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.listings-stat-card .stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-dark);
+  background-color: rgba(249, 115, 22, 0.1);
+  color: var(--dashboard-orange);
 }
 
 .listings-stat-card .stat-label {
-  font-size: 0.85rem;
-  color: var(--text-gray);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dashboard-text-secondary);
+}
+
+.listings-stat-card .stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--dashboard-text-primary);
+}
+
+.listings-stat-card .stat-description {
+  font-size: 12px;
+  color: var(--dashboard-text-secondary);
 }
 
 /* Toolbar */
@@ -605,7 +617,7 @@
   background-color: var(--primary-green);
   color: var(--white);
   border: none;
-  border-radius: 25px;
+  border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
   font-family: var(--font-main);
@@ -626,7 +638,7 @@
   background-color: var(--white);
   color: var(--primary-green);
   border: 2px solid var(--primary-green);
-  border-radius: 25px;
+  border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
   font-family: var(--font-main);
@@ -646,7 +658,7 @@
   background-color: #ef4444;
   color: var(--white);
   border: none;
-  border-radius: 25px;
+  border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
   font-family: var(--font-main);

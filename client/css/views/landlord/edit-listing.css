@@ -10,14 +10,14 @@
   --text-medium: #5f6368;
   --text-light: #80868b;
   --border-color: #dadce0;
-  --bg-light: #f8f9fa;
+  --bg-light: #faf8f3;
   --bg-green: #e8f5e9;
   --white: #ffffff;
 }
 
 .edit-listing-page {
   min-height: 100vh;
-  background-color: var(--bg-light);
+  background-color: #faf8f3;
   display: flex;
 }
 
@@ -592,26 +592,6 @@
 .btn-cancel:hover {
   background-color: var(--bg-light);
   border-color: var(--text-medium);
-}
-
-.btn-preview {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
-  background-color: var(--white);
-  border: 2px solid var(--primary-blue);
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--primary-blue);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-preview:hover {
-  background-color: var(--primary-blue);
-  color: var(--white);
 }
 
 .btn-submit {

@@ -26,7 +26,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Fetch properties from API
   try {
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/landlord/properties.php`, {
+      method: 'GET',
+      headers,
       credentials: 'include',
     });
 

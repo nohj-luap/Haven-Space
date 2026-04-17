@@ -78,6 +78,9 @@ function populateForm(property) {
   document.getElementById('property-price').value = property.price || 0;
   document.getElementById('property-deposit').value = property.deposit || 0;
   document.getElementById('property-rooms').value = property.total_rooms || property.rooms || 0;
+  document.getElementById('property-capacity').value = property.capacity || '';
+  document.getElementById('property-min-stay').value = property.min_stay || '';
+  document.getElementById('property-availability').value = property.availability || 'available-now';
   document.getElementById('property-status').value = property.status || 'active';
   document.getElementById('property-address').value = property.address || '';
   document.getElementById('property-city').value = property.city || '';
@@ -349,6 +352,9 @@ async function handleFormSubmit(e) {
     price: parseFloat(formData.get('propertyPrice')) || 0,
     deposit: parseFloat(formData.get('propertyDeposit')) || 0,
     total_rooms: parseInt(formData.get('propertyRooms')) || 0,
+    capacity: formData.get('propertyCapacity') || null,
+    min_stay: formData.get('propertyMinStay') || null,
+    availability: formData.get('propertyAvailability') || 'available-now',
     status: formData.get('propertyStatus'),
     address: formData.get('propertyAddress'),
     city: formData.get('propertyCity'),

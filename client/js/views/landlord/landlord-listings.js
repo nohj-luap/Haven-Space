@@ -37,7 +37,17 @@ export function initLandlordListings() {
 
 async function fetchPropertiesFromApi() {
   try {
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${CONFIG.API_BASE_URL}/api/landlord/properties.php`, {
+      method: 'GET',
+      headers,
       credentials: 'include',
     });
 
@@ -170,7 +180,7 @@ function createPropertyCard(property) {
 
   card.innerHTML = `
     <div class="property-card-image">
-      <img src="${photos[0] || '/assets/placeholder-property.svg'}" alt="${property.name}" />
+      <img src="${photos[0] || '/assets/images/placeholder-property.svg'}" alt="${property.name}" />
       <span class="property-card-status status-${property.status}">${statusLabel}</span>
       <div class="property-card-photo-count">
         ${getIcon('photo')}
@@ -294,7 +304,7 @@ function openPropertyModal(property) {
 
   const photos = property.photos || [];
   const coverImage = document.getElementById('modal-cover-image');
-  coverImage.src = photos[0] || '/assets/placeholder-property.svg';
+  coverImage.src = photos[0] || '/assets/images/placeholder-property.svg';
   coverImage.alt = property.name;
 
   const thumbsContainer = document.getElementById('modal-image-thumbs');

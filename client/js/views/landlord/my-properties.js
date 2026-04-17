@@ -223,7 +223,15 @@ async function loadProperties(userId) {
 
   try {
     // First, try to fetch from properties table (full listings)
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const propertiesRes = await fetch(`${CONFIG.API_BASE_URL}/api/landlord/properties.php`, {
+      method: 'GET',
+      headers,
       credentials: 'include',
     });
 
