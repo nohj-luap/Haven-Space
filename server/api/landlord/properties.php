@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Handle GET request - List properties
+// Handle GET request - List properties or get single property
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Authenticate user and authorize as landlord
     $user = Middleware::authorize(['landlord']);
@@ -98,112 +98,201 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $pdo = Connection::getInstance()->getPdo();
 
-    $stmt = $pdo->prepare("
-        SELECT 
-            p.id,
-            p.title,
-            p.description,
-            p.address,
-            p.latitude,
-            p.longitude,
-            p.price,
-            p.status,
-            p.listing_moderation_status,
-            p.created_at,
-            COUNT(DISTINCT r.id) as total_rooms,
-            COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN 1 ELSE 0 END), 0) as occupied_rooms,
-            COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN r.price ELSE 0 END), 0) as monthly_revenue,
-            lp.property_type,
-            pl.city,
-            pl.province
-        FROM properties p
-        LEFT JOIN rooms r ON p.id = r.property_id
-        LEFT JOIN landlord_profiles lp ON lp.user_id = p.landlord_id
-        LEFT JOIN property_locations pl ON pl.landlord_id = lp.id AND pl.is_primary = TRUE
-        WHERE p.landlord_id = ? AND p.deleted_at IS NULL
-        GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, lp.property_type, pl.city, pl.province
-        ORDER BY p.created_at DESC
-    ");
-    $stmt->execute([$landlordId]);
-    $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Check if requesting a single property
+        $propertyId = $_GET['id'] ?? null;
 
-    // Get amenities for all properties
-    $propertyIds = array_column($properties, 'id');
-    $amenitiesMap = [];
-    if (!empty($propertyIds)) {
-        $placeholders = implode(',', array_fill(0, count($propertyIds), '?'));
-        $amenitiesStmt = $pdo->prepare("
-            SELECT property_id, amenity_name 
-            FROM property_amenities 
-            WHERE property_id IN ($placeholders)
-        ");
-        $amenitiesStmt->execute($propertyIds);
-        $amenitiesRows = $amenitiesStmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($amenitiesRows as $row) {
-            if (!isset($amenitiesMap[$row['property_id']])) {
-                $amenitiesMap[$row['property_id']] = [];
+        if ($propertyId) {
+            // Get single property with full details
+            $stmt = $pdo->prepare("
+                SELECT 
+                    p.id,
+                    p.title,
+                    p.description,
+                    p.address,
+                    p.latitude,
+                    p.longitude,
+                    p.price,
+                    p.status,
+                    p.listing_moderation_status,
+                    p.created_at,
+                    pd.city,
+                    pd.province,
+                    pd.property_type,
+                    pd.deposit,
+                    COUNT(DISTINCT r.id) as total_rooms,
+                    COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN 1 ELSE 0 END), 0) as occupied_rooms
+                FROM properties p
+                LEFT JOIN property_details pd ON pd.property_id = p.id
+                LEFT JOIN rooms r ON p.id = r.property_id
+                WHERE p.id = ? AND p.landlord_id = ? AND p.deleted_at IS NULL
+                GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, pd.city, pd.province, pd.property_type, pd.deposit
+            ");
+            $stmt->execute([$propertyId, $landlordId]);
+            $property = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$property) {
+                json_response(404, ['error' => 'Property not found']);
             }
-            $amenitiesMap[$row['property_id']][] = $row['amenity_name'];
+
+            // Get amenities
+            $amenitiesStmt = $pdo->prepare("SELECT amenity_name FROM property_amenities WHERE property_id = ?");
+            $amenitiesStmt->execute([$propertyId]);
+            $amenities = $amenitiesStmt->fetchAll(PDO::FETCH_COLUMN);
+
+            // Get photos
+            $photosStmt = $pdo->prepare("SELECT photo_url FROM property_photos WHERE property_id = ? ORDER BY display_order");
+            $photosStmt->execute([$propertyId]);
+            $photos = $photosStmt->fetchAll(PDO::FETCH_COLUMN);
+
+            // Map property_type to frontend format
+            $typeMapping = [
+                'Single unit' => 'boarding-house',
+                'Multi-unit' => 'boarding-house',
+                'Apartment' => 'apartment',
+                'Dormitory' => 'dormitory',
+            ];
+            $type = isset($typeMapping[$property['property_type']]) 
+                ? $typeMapping[$property['property_type']] 
+                : 'boarding-house';
+
+            // Map database status to frontend status
+            $displayStatus = $property['status'];
+            if ($displayStatus === 'available') {
+                $displayStatus = 'active';
+            } elseif ($displayStatus === 'hidden') {
+                $displayStatus = 'inactive';
+            }
+
+            $transformedProperty = [
+                'id' => intval($property['id']),
+                'name' => $property['title'],
+                'type' => $type,
+                'description' => $property['description'] ?? '',
+                'address' => $property['address'],
+                'latitude' => $property['latitude'] ? floatval($property['latitude']) : '',
+                'longitude' => $property['longitude'] ? floatval($property['longitude']) : '',
+                'city' => $property['city'] ?? '',
+                'province' => $property['province'] ?? '',
+                'price' => floatval($property['price']),
+                'deposit' => $property['deposit'] ? floatval($property['deposit']) : 0,
+                'status' => $displayStatus,
+                'total_rooms' => intval($property['total_rooms']),
+                'rooms' => intval($property['total_rooms']),
+                'occupied_rooms' => intval($property['occupied_rooms']),
+                'created_at' => $property['created_at'],
+                'amenities' => $amenities,
+                'photos' => $photos,
+            ];
+
+            json_response(200, ['data' => $transformedProperty]);
+        } else {
+            // List all properties
+            $stmt = $pdo->prepare("
+                SELECT 
+                    p.id,
+                    p.title,
+                    p.description,
+                    p.address,
+                    p.latitude,
+                    p.longitude,
+                    p.price,
+                    p.status,
+                    p.listing_moderation_status,
+                    p.created_at,
+                    COUNT(DISTINCT r.id) as total_rooms,
+                    COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN 1 ELSE 0 END), 0) as occupied_rooms,
+                    COALESCE(SUM(CASE WHEN r.status = 'occupied' THEN r.price ELSE 0 END), 0) as monthly_revenue,
+                    lp.property_type,
+                    pl.city,
+                    pl.province
+                FROM properties p
+                LEFT JOIN rooms r ON p.id = r.property_id
+                LEFT JOIN landlord_profiles lp ON lp.user_id = p.landlord_id
+                LEFT JOIN property_locations pl ON pl.landlord_id = lp.id AND pl.is_primary = TRUE
+                WHERE p.landlord_id = ? AND p.deleted_at IS NULL
+                GROUP BY p.id, p.title, p.description, p.address, p.latitude, p.longitude, p.price, p.status, p.listing_moderation_status, p.created_at, lp.property_type, pl.city, pl.province
+                ORDER BY p.created_at DESC
+            ");
+            $stmt->execute([$landlordId]);
+            $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Get amenities for all properties
+            $propertyIds = array_column($properties, 'id');
+            $amenitiesMap = [];
+            if (!empty($propertyIds)) {
+                $placeholders = implode(',', array_fill(0, count($propertyIds), '?'));
+                $amenitiesStmt = $pdo->prepare("
+                    SELECT property_id, amenity_name 
+                    FROM property_amenities 
+                    WHERE property_id IN ($placeholders)
+                ");
+                $amenitiesStmt->execute($propertyIds);
+                $amenitiesRows = $amenitiesStmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($amenitiesRows as $row) {
+                    if (!isset($amenitiesMap[$row['property_id']])) {
+                        $amenitiesMap[$row['property_id']] = [];
+                    }
+                    $amenitiesMap[$row['property_id']][] = $row['amenity_name'];
+                }
+            }
+
+            // Transform data for frontend
+            $transformedProperties = array_map(function($property) use ($amenitiesMap) {
+                $totalRooms = intval($property['total_rooms']);
+                $occupiedRooms = intval($property['occupied_rooms']);
+                $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0;
+
+                // Determine status based on occupancy
+                $displayStatus = 'active';
+                if ($property['listing_moderation_status'] === 'rejected') {
+                    $displayStatus = 'inactive';
+                } elseif ($occupancyRate === 100 && $totalRooms > 0) {
+                    $displayStatus = 'full';
+                }
+
+                // Map property_type from landlord_profiles to frontend format
+                $typeMapping = [
+                    'Single unit' => 'boarding-house',
+                    'Multi-unit' => 'boarding-house',
+                    'Apartment' => 'apartment',
+                    'Dormitory' => 'dormitory',
+                ];
+                $type = isset($typeMapping[$property['property_type']]) 
+                    ? $typeMapping[$property['property_type']] 
+                    : 'boarding-house';
+
+                return [
+                    'id' => intval($property['id']),
+                    'name' => htmlspecialchars($property['title']),
+                    'type' => $type,
+                    'description' => htmlspecialchars($property['description'] ?? ''),
+                    'address' => htmlspecialchars($property['address']),
+                    'latitude' => $property['latitude'] ? floatval($property['latitude']) : null,
+                    'longitude' => $property['longitude'] ? floatval($property['longitude']) : null,
+                    'city' => htmlspecialchars($property['city'] ?? ''),
+                    'province' => htmlspecialchars($property['province'] ?? ''),
+                    'price' => floatval($property['price']),
+                    'status' => $displayStatus,
+                    'total_rooms' => $totalRooms,
+                    'occupied_rooms' => $occupiedRooms,
+                    'monthly_revenue' => floatval($property['monthly_revenue']),
+                    'created_at' => $property['created_at'],
+                    'amenities' => $amenitiesMap[$property['id']] ?? [],
+                ];
+            }, $properties);
+
+            json_response(200, [
+                'data' => [
+                    'properties' => $transformedProperties,
+                    'total_count' => count($transformedProperties),
+                ],
+            ]);
         }
+    } catch (Exception $e) {
+        error_log('Landlord properties API error: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
+        json_response(500, ['error' => 'Failed to load properties: ' . $e->getMessage()]);
     }
-
-    // Transform data for frontend
-    $transformedProperties = array_map(function($property) use ($amenitiesMap) {
-        $totalRooms = intval($property['total_rooms']);
-        $occupiedRooms = intval($property['occupied_rooms']);
-        $occupancyRate = $totalRooms > 0 ? round(($occupiedRooms / $totalRooms) * 100) : 0;
-
-        // Determine status based on occupancy
-        $displayStatus = 'active';
-        if ($property['listing_moderation_status'] === 'rejected') {
-            $displayStatus = 'inactive';
-        } elseif ($occupancyRate === 100 && $totalRooms > 0) {
-            $displayStatus = 'full';
-        }
-
-        // Map property_type from landlord_profiles to frontend format
-        $typeMapping = [
-            'Single unit' => 'boarding-house',
-            'Multi-unit' => 'boarding-house',
-            'Apartment' => 'apartment',
-            'Dormitory' => 'dormitory',
-        ];
-        $type = isset($typeMapping[$property['property_type']]) 
-            ? $typeMapping[$property['property_type']] 
-            : 'boarding-house';
-
-        return [
-            'id' => intval($property['id']),
-            'name' => htmlspecialchars($property['title']),
-            'type' => $type,
-            'description' => htmlspecialchars($property['description'] ?? ''),
-            'address' => htmlspecialchars($property['address']),
-            'latitude' => $property['latitude'] ? floatval($property['latitude']) : null,
-            'longitude' => $property['longitude'] ? floatval($property['longitude']) : null,
-            'city' => htmlspecialchars($property['city'] ?? ''),
-            'province' => htmlspecialchars($property['province'] ?? ''),
-            'price' => floatval($property['price']),
-            'status' => $displayStatus,
-            'total_rooms' => $totalRooms,
-            'occupied_rooms' => $occupiedRooms,
-            'monthly_revenue' => floatval($property['monthly_revenue']),
-            'created_at' => $property['created_at'],
-            'amenities' => $amenitiesMap[$property['id']] ?? [],
-        ];
-    }, $properties);
-
-    json_response(200, [
-        'data' => [
-            'properties' => $transformedProperties,
-            'total_count' => count($transformedProperties),
-        ],
-    ]);
-
-} catch (Exception $e) {
-    error_log('Landlord properties API error: ' . $e->getMessage());
-    error_log('Stack trace: ' . $e->getTraceAsString());
-    json_response(500, ['error' => 'Failed to load properties: ' . $e->getMessage()]);
-}
 }
 
 // Method not allowed

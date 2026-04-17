@@ -5,6 +5,7 @@
 
 import CONFIG from '../../config.js';
 import { updateBoarderStatus } from '../../shared/routing.js';
+import { getImageUrl } from '../../shared/image-utils.js';
 
 // State management
 const state = {
@@ -117,11 +118,18 @@ function useFallbackData() {
  * Populate property data into the page
  */
 function populatePropertyData(property) {
-  // Update property image
+  // Update property image with proper URL handling
   const propertyImg = document.getElementById('property-img');
   if (propertyImg && property.images && property.images.length > 0) {
-    propertyImg.src = property.images[0];
+    // Use getImageUrl to handle both uploaded images and external URLs
+    propertyImg.src = getImageUrl(property.images[0]);
     propertyImg.alt = property.title;
+
+    // Add error handler for fallback
+    propertyImg.onerror = function () {
+      this.onerror = null;
+      this.src = '/assets/images/placeholder-room.svg';
+    };
   }
 
   // Update property title
@@ -190,12 +198,14 @@ function populatePropertyData(property) {
     // Fallback to default room types
     const singlePrice = property.price || 4500;
     const sharedPrice = property.sharedPrice || 3000;
-    // Use property_id as fallback room_id since we don't have specific room IDs
-    const fallbackRoomId = property.id || state.propertyId;
+
+    // For properties without specific room data, we need to handle this differently
+    // We should either create rooms on the backend or use a different approach
+    console.warn('Property has no room data. This may cause issues with application submission.');
 
     roomTypeOptions.innerHTML = `
       <label class="room-type-option">
-        <input type="radio" name="room-type" value="single" checked data-price="${singlePrice}" data-room-id="${fallbackRoomId}" />
+        <input type="radio" name="room-type" value="single" checked data-price="${singlePrice}" data-room-id="" />
         <div class="room-type-content">
           <div class="room-type-info">
             <span data-icon="user" data-icon-width="20" data-icon-height="20"></span>
@@ -208,7 +218,7 @@ function populatePropertyData(property) {
         </div>
       </label>
       <label class="room-type-option">
-        <input type="radio" name="room-type" value="shared" data-price="${sharedPrice}" data-room-id="${fallbackRoomId}" />
+        <input type="radio" name="room-type" value="shared" data-price="${sharedPrice}" data-room-id="" />
         <div class="room-type-content">
           <div class="room-type-info">
             <span data-icon="userGroup" data-icon-width="20" data-icon-height="20"></span>
@@ -364,8 +374,11 @@ async function handleSubmit(e) {
 
   const roomId = parseInt(selectedRoomTypeInput.dataset.roomId);
 
-  if (!roomId) {
-    alert('Unable to identify the selected room. Please try again.');
+  if (!roomId || isNaN(roomId)) {
+    alert(
+      'This property does not have available rooms configured. Please contact the landlord or choose a different property.'
+    );
+    console.error('Invalid room_id:', selectedRoomTypeInput.dataset.roomId);
     return;
   }
 

@@ -5,6 +5,7 @@
 
 import { getIcon, getSolidIcon } from '../../shared/icons.js';
 import { updateBoarderStatus } from '../../shared/routing.js';
+import { getImageUrl, getImageErrorHandler } from '../../shared/image-utils.js';
 import CONFIG from '../../config.js';
 
 // State management
@@ -84,7 +85,7 @@ async function fetchProperties() {
         reviews: prop.reviews || 0,
         type: prop.roomTypes || 'single',
         amenities: Array.isArray(prop.amenities) ? prop.amenities : [],
-        image: prop.image || '../../assets/images/placeholder-room.svg',
+        image: getImageUrl(prop.image),
         badges: prop.badges || [],
         available: 'Now',
         roomTypes: prop.roomTypes || 'Available',
@@ -558,10 +559,10 @@ function populateDetailPanel(property) {
   // Set property image
   const propertyImage = document.getElementById('detail-property-image');
   if (propertyImage) {
-    propertyImage.src = property.image || '../../assets/images/placeholder-room.svg';
+    propertyImage.src = getImageUrl(property.image);
     propertyImage.alt = property.title;
     propertyImage.onerror = function () {
-      this.src = '../../assets/images/placeholder-room.svg';
+      this.src = getImageUrl(null);
     };
   }
 
@@ -886,10 +887,10 @@ function renderProperties(propertiesList) {
     <div class="find-room-property-card" data-property-id="${property.id}">
       <div class="find-room-card-image-wrapper">
         <img
-          src="${property.image}"
+          src="${getImageUrl(property.image)}"
           alt="${property.title}"
           class="find-room-card-image"
-          onerror="this.src='../../assets/images/placeholder-room.svg'"
+          onerror="${getImageErrorHandler()}"
         />
         <div class="find-room-card-badges">
           ${

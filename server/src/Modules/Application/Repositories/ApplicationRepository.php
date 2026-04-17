@@ -80,6 +80,20 @@ class ApplicationRepository
      */
     public function create(array $data): int
     {
+        // Validate that the room exists
+        $roomCheck = $this->pdo->prepare('SELECT id, property_id FROM rooms WHERE id = ?');
+        $roomCheck->execute([$data['room_id']]);
+        $room = $roomCheck->fetch();
+        
+        if (!$room) {
+            throw new \InvalidArgumentException('Invalid room_id: Room does not exist');
+        }
+        
+        // If property_id is not provided, get it from the room
+        if (empty($data['property_id'])) {
+            $data['property_id'] = $room['property_id'];
+        }
+
         $sql = 'INSERT INTO applications (boarder_id, landlord_id, room_id, property_id, message, status)
                 VALUES (?, ?, ?, ?, ?, ?)';
 
@@ -87,7 +101,7 @@ class ApplicationRepository
             $data['boarder_id'],
             $data['landlord_id'],
             $data['room_id'],
-            $data['property_id'] ?? null,
+            $data['property_id'],
             $data['message'],
             $data['status'] ?? 'pending',
         ]);

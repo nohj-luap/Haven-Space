@@ -5,6 +5,7 @@
 
 import { getIcon } from '../../shared/icons.js';
 import { getBoarderStatus } from '../../shared/routing.js';
+import { getImageUrl, getImageErrorHandler } from '../../shared/image-utils.js';
 import CONFIG from '../../config.js';
 
 /**
@@ -384,10 +385,10 @@ function renderProperties(properties, grid) {
     <div class="find-room-property-card" data-property-id="${property.id}">
       <div class="find-room-card-image-wrapper">
         <img
-          src="${property.image || '../../../assets/images/placeholder-room.svg'}"
+          src="${getImageUrl(property.image)}"
           alt="${property.title}"
           class="find-room-card-image"
-          onerror="this.src='../../../assets/images/placeholder-room.svg'"
+          onerror="${getImageErrorHandler()}"
         />
         <div class="find-room-card-badges">
           ${

@@ -5,6 +5,7 @@
 
 import { getIcon } from '../../shared/icons.js';
 import { loadState, getState } from '../../shared/state.js';
+import { getImageUrl, getImageErrorHandler } from '../../shared/image-utils.js';
 import CONFIG from '../../config.js';
 
 // State management for enhanced features
@@ -186,10 +187,10 @@ function createPropertyCard(property) {
   card.innerHTML = `
     <div class="find-room-card-image-wrapper">
       <img
-        src="${property.image}"
+        src="${getImageUrl(property.image)}"
         alt="${property.title}"
         class="find-room-card-image"
-        onerror="this.src='../../assets/images/placeholder-room.svg'"
+        onerror="${getImageErrorHandler()}"
       />
       <div class="find-room-card-badges">
         ${badgesHtml}
@@ -749,7 +750,7 @@ async function loadApplicationsFromAPI() {
       title: app.property_title || app.room_title || 'Property',
       address: app.property_address || app.address || '',
       price: app.rent || app.monthly_rent || app.price || 0,
-      image: app.property_image || app.image || '../../../assets/images/placeholder-room.svg',
+      image: getImageUrl(app.property_image || app.image),
       status: app.status, // 'pending' | 'accepted' | 'rejected'
       appliedDate: app.created_at,
       roomTitle: app.room_title || '',
@@ -850,7 +851,7 @@ function renderApplications() {
            style="display:flex;gap:0.75rem;padding:0.875rem;border:1px solid var(--border-color);border-radius:12px;margin-bottom:0.625rem;cursor:pointer;transition:box-shadow 0.2s;">
         <img src="${app.image}" alt="${app.title}"
              style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;"
-             onerror="this.src='../../../assets/images/placeholder-room.svg'" />
+             onerror="${getImageErrorHandler()}" />
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;">
             <div style="min-width:0;">
@@ -1071,10 +1072,10 @@ function populateDetailPanel(property) {
   // Set property image
   const propertyImage = document.getElementById('detail-property-image');
   if (propertyImage) {
-    propertyImage.src = property.image || '../../assets/images/placeholder-room.svg';
+    propertyImage.src = getImageUrl(property.image);
     propertyImage.alt = property.title;
     propertyImage.onerror = function () {
-      this.src = '../../assets/images/placeholder-room.svg';
+      this.src = getImageUrl(null);
     };
   }
 

@@ -3,6 +3,7 @@
  * Handles room details display and gallery for public users
  */
 
+import { getImageUrl } from '../../shared/image-utils.js';
 import CONFIG from '../../config.js';
 
 // Sample room data (fallback for development)
@@ -493,13 +494,13 @@ function populateRoomData(room) {
   // Update gallery images
   const mainImage = document.getElementById('gallery-main-image');
   if (mainImage && room.images && room.images.length > 0) {
-    mainImage.src = room.images[0] || '../../../assets/images/placeholder-room.svg';
+    mainImage.src = getImageUrl(room.images[0]);
     mainImage.alt = `${room.title} - Main View`;
     mainImage.onerror = function () {
-      this.src = '../../../assets/images/placeholder-room.svg';
+      this.src = getImageUrl(null);
     };
   } else if (mainImage) {
-    mainImage.src = '../../../assets/images/placeholder-room.svg';
+    mainImage.src = getImageUrl(null);
     mainImage.alt = 'No image available';
   }
 
@@ -510,7 +511,7 @@ function populateRoomData(room) {
       .map(
         (img, index) => `
           <button class="gallery-thumb ${index === 0 ? 'active' : ''}" data-index="${index}">
-            <img src="${img}" alt="Thumbnail ${index + 1}" />
+            <img src="${getImageUrl(img)}" alt="Thumbnail ${index + 1}" />
           </button>
         `
       )
@@ -654,10 +655,9 @@ function updateGalleryImage() {
 
   const mainImage = document.getElementById('gallery-main-image');
   if (mainImage) {
-    mainImage.src =
-      room.images[state.currentImageIndex] || '../../../assets/images/placeholder-room.svg';
+    mainImage.src = getImageUrl(room.images[state.currentImageIndex]);
     mainImage.onerror = function () {
-      this.src = '../../../assets/images/placeholder-room.svg';
+      this.src = getImageUrl(null);
     };
   }
 

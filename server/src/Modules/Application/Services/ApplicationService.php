@@ -67,6 +67,7 @@ class ApplicationService
         $required = ['room_id', 'landlord_id', 'message'];
         foreach ($required as $field) {
             if (empty($data[$field])) {
+                error_log("Missing required field: $field. Data: " . json_encode($data));
                 throw new \InvalidArgumentException("Missing required field: $field");
             }
         }
@@ -74,9 +75,15 @@ class ApplicationService
         $data['boarder_id'] = $boarderId;
         $data['status'] = 'pending';
 
-        $id = $this->repository->create($data);
-
-        return $this->getApplication($id, $boarderId, 'boarder');
+        try {
+            $id = $this->repository->create($data);
+            error_log("Application created successfully with ID: $id");
+            return $this->getApplication($id, $boarderId, 'boarder');
+        } catch (\Exception $e) {
+            error_log("Error creating application: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            throw $e;
+        }
     }
 
     /**
