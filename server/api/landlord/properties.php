@@ -2,7 +2,9 @@
 /**
  * Landlord Properties API
  * GET /api/landlord/properties.php - Returns all properties for the logged-in landlord
+ * GET /api/landlord/properties.php?id=X - Returns single property details
  * POST /api/landlord/properties.php - Create a new property listing
+ * DELETE /api/landlord/properties.php?id=X - Delete a property (soft delete)
  *
  * Returns all properties for the logged-in landlord with:
  * - Property details
@@ -86,6 +88,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log('Create property error: ' . $e->getMessage());
         error_log('Stack trace: ' . $e->getTraceAsString());
         json_response(500, ['error' => 'Failed to create property: ' . $e->getMessage()]);
+    }
+}
+
+// Handle DELETE request - Delete property
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    // Authenticate user and authorize as landlord
+    $user = Middleware::authorize(['landlord']);
+    $landlordId = $user['user_id'];
+
+    // Get property ID from query parameter
+    $propertyId = $_GET['id'] ?? null;
+    
+    if (!$propertyId) {
+        json_response(400, ['error' => 'Property ID is required']);
+    }
+
+    try {
+        $pdo = Connection::getInstance()->getPdo();
+
+        // First, verify the property belongs to this landlord
+        $checkStmt = $pdo->prepare("
+            SELECT id, title FROM properties 
+            WHERE id = ? AND landlord_id = ? AND deleted_at IS NULL
+        ");
+        $checkStmt->execute([$propertyId, $landlordId]);
+        $property = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$property) {
+            json_response(404, ['error' => 'Property not found or access denied']);
+        }
+
+        // Begin transaction for safe deletion
+        $pdo->beginTransaction();
+
+        try {
+            // Soft delete the property (set deleted_at timestamp)
+            $deleteStmt = $pdo->prepare("
+                UPDATE properties 
+                SET deleted_at = NOW(), status = 'deleted'
+                WHERE id = ? AND landlord_id = ?
+            ");
+            $deleteStmt->execute([$propertyId, $landlordId]);
+
+            // Also soft delete associated rooms
+            $deleteRoomsStmt = $pdo->prepare("
+                UPDATE rooms 
+                SET deleted_at = NOW(), status = 'deleted'
+                WHERE property_id = ?
+            ");
+            $deleteRoomsStmt->execute([$propertyId]);
+
+            // Commit the transaction
+            $pdo->commit();
+
+            json_response(200, [
+                'success' => true,
+                'message' => 'Property deleted successfully',
+                'data' => [
+                    'property_id' => intval($propertyId),
+                    'property_name' => $property['title']
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            // Rollback on error
+            $pdo->rollBack();
+            throw $e;
+        }
+
+    } catch (Exception $e) {
+        error_log('Delete property error: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
+        json_response(500, ['error' => 'Failed to delete property: ' . $e->getMessage()]);
     }
 }
 

@@ -335,6 +335,14 @@ Router::get('/api/rooms/detail', function() {
 });
 
 // ============================================
+// ALL PROPERTIES ROUTES (FOR MAPS)
+// ============================================
+// Get all active properties from all landlords for map display
+Router::get('/api/properties/all', function() {
+    require_once __DIR__ . '/properties/all.php';
+});
+
+// ============================================
 // NOTIFICATION ROUTES
 // ============================================
 Router::get('/api/notifications', [NotificationController::class, 'index']);
