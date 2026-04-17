@@ -32,9 +32,10 @@ export function getBoarderRedirectPath(user) {
       // New boarders need to apply first - redirect to boarder find-a-room page (authenticated)
       return `${basePath}boarder/find-a-room/index.html`;
 
-    case 'applied_pending':
-      // Has pending applications - show applications page
-      return `${basePath}boarder/applications/index.html`;
+    case 'applied_pending': {
+      // Has pending applications - show applications dashboard
+      return `${basePath}boarder/applications-dashboard/index.html`;
+    }
 
     case 'pending_confirmation':
       // Landlord accepted, waiting for boarder confirmation
@@ -45,12 +46,12 @@ export function getBoarderRedirectPath(user) {
       return `${basePath}boarder/index.html`;
 
     case 'rejected':
-      // Application rejected - redirect to boarder find-a-room to apply elsewhere (authenticated)
-      return `${basePath}boarder/find-a-room/index.html`;
+      // Application rejected - redirect to applications dashboard to apply elsewhere
+      return `${basePath}boarder/applications-dashboard/index.html`;
 
     default:
-      // Fallback to boarder find-a-room for unknown status (authenticated)
-      return `${basePath}boarder/find-a-room/index.html`;
+      // Fallback to applications dashboard for unknown status
+      return `${basePath}boarder/applications-dashboard/index.html`;
   }
 }
 

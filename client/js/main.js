@@ -39,9 +39,21 @@ async function detectAndInitialize() {
       initConfirmApplication();
       break;
     }
+    case 'application-submitted': {
+      const { initApplicationSubmitted } = await import('./views/boarder/application-submitted.js');
+      initApplicationSubmitted();
+      break;
+    }
     case 'boarder': {
       const { initBoarderDashboard } = await import('./views/boarder/index.js');
       initBoarderDashboard();
+      break;
+    }
+    case 'boarder-applications': {
+      const { initApplicationsDashboard } = await import(
+        './views/boarder/applications-dashboard.js'
+      );
+      initApplicationsDashboard();
       break;
     }
     case 'landlord': {
